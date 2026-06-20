@@ -1,0 +1,90 @@
+{
+  "karpio": {
+    "ph_min": 7.0,
+    "ph_max": 7.5,
+    "suhu_min": 5.0,
+    "suhu_max": 34.0,
+    "keruh_min": 5.2,
+    "keruh_max": 9.5
+  },
+  "katla": {
+    "ph_min": 6.28,
+    "ph_max": 8.3,
+    "suhu_min": 21.12,
+    "suhu_max": 31.0,
+    "keruh_min": 3.6,
+    "keruh_max": 4.12
+  },
+  "koi": {
+    "ph_min": 5.5,
+    "ph_max": 8.5,
+    "suhu_min": 18.0,
+    "suhu_max": 32.0,
+    "keruh_min": 4.0,
+    "keruh_max": 6.1
+  },
+  "magur": {
+    "ph_min": 7.1,
+    "ph_max": 7.4,
+    "suhu_min": 21.0,
+    "suhu_max": 30.0,
+    "keruh_min": 7.0,
+    "keruh_max": 8.0
+  },
+  "pangas": {
+    "ph_min": 7.3,
+    "ph_max": 8.87,
+    "suhu_min": 17.81,
+    "suhu_max": 31.0,
+    "keruh_min": 3.0,
+    "keruh_max": 6.0
+  },
+  "prawn": {
+    "ph_min": 7.5,
+    "ph_max": 8.3,
+    "suhu_min": 26.0,
+    "suhu_max": 31.0,
+    "keruh_min": 4.11,
+    "keruh_max": 8.5
+  },
+  "rui": {
+    "ph_min": 6.01,
+    "ph_max": 8.2,
+    "suhu_min": 20.87,
+    "suhu_max": 31.0,
+    "keruh_min": 3.32,
+    "keruh_max": 5.08
+  },
+  "shrimp": {
+    "ph_min": 6.51,
+    "ph_max": 7.9,
+    "suhu_min": 20.0,
+    "suhu_max": 29.0,
+    "keruh_min": 3.6,
+    "keruh_max": 15.5
+  },
+  "silverCup": {
+    "ph_min": 6.0,
+    "ph_max": 7.6,
+    "suhu_min": 21.06,
+    "suhu_max": 30.0,
+    "keruh_min": 3.56,
+    "keruh_max": 6.0
+  },
+  "sing": {
+    "ph_min": 6.68,
+    "ph_max": 8.1,
+    "suhu_min": 21.0,
+    "suhu_max": 31.0,
+    "keruh_min": 3.56,
+    "keruh_max": 7.3
+  },
+  "tilapia": {
+    "ph_min": 6.02,
+    "ph_max": 8.79,
+    "suhu_min": 17.5,
+    "suhu_max": 27.0,
+    "keruh_min": 3.3,
+    "keruh_max": 6.1
+  }
+}

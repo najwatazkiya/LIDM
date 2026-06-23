@@ -1,0 +1,39 @@
+{
+  "trained_at": "2026-06-17T05:51:06.368487",
+  "dataset_path": "/content/drive/MyDrive/aquaculture_ml/datasets/realfishdataset.csv",
+  "features": [
+    "ph",
+    "temperature",
+    "turbidity"
+  ],
+  "target": "fish",
+  "best_params": {
+    "max_depth": null,
+    "min_samples_leaf": 1,
+    "min_samples_split": 2,
+    "n_estimators": 100
+  },
+  "metrics": {
+    "accuracy": 0.9981,
+    "f1_score_weighted": 0.9981,
+    "feature_importances": {
+      "ph": 0.2986712598816424,
+      "temperature": 0.2727419721318101,
+      "turbidity": 0.42858676798654755
+    },
+    "classes": [
+      "karpio",
+      "katla",
+      "koi",
+      "magur",
+      "pangas",
+      "prawn",
+      "rui",
+      "shrimp",
+      "silverCup",
+      "sing",
+      "tilapia"
+    ]
+  },
+  "model_type": "RandomForestClassifier"
+}

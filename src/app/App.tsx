@@ -377,7 +377,7 @@ type Page = "beranda" | "virtual-lab" | "sim1" | "sim2" | "sim3" | "database" | 
 function Navbar({ page, navigate }: { page: Page; navigate: (p: Page, e?: Record<string, unknown>) => void }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const links: { id: Page; label: string }[] = [
-    { id: "beranda", label: "Beranda" },
+    { id: "beranda", label: "Beranda"},
     { id: "virtual-lab", label: "Virtual Lab" },
     { id: "database", label: "Database Ikan" },
     { id: "kuis", label: "Kuis" },
@@ -425,26 +425,27 @@ function Footer() {
               <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center"><Waves size={14} className="text-white" /></div>
               <span className="text-base font-bold" style={{ fontFamily: "Poppins" }}>Akuanesia</span>
             </div>
-            <p className="text-white/60 text-sm max-w-xs">Platform virtual lab ML untuk eksplorasi budidaya perikanan air tawar Indonesia.</p>
-            <div className="mt-3 flex items-center gap-2 text-xs text-white/40"><Database size={11} /><span>Dataset: realfishdataset.csv — IoT Jamalpur, Bangladesh</span></div>
+            <p className="text-white/60 text-sm max-w-xs">Platform virtual lab untuk membantu siswa dan mahasiswa memahami perikanan Indonesia melalui simulasi dan eksperimen interaktif.</p>
           </div>
           <div className="grid grid-cols-2 gap-8 text-sm">
             <div>
-              <p className="font-semibold text-white/80 mb-2">Sumber Data</p>
-              <p className="text-white/50">realfishdataset.csv — IoT Sensor</p>
-              <p className="text-white/50">KKP RI — Data Budidaya 2023</p>
-              <p className="text-white/50">FAO Fisheries 2024</p>
+              <p className="font-semibold text-white/80 mb-2">Konten Utama</p>
+              <p className="text-white/50">Virtual lab</p>
+              <p className="text-white/50">Database ikan</p>
+              <p className="text-white/50">Mulai kuis</p>
+              <p className="text-white/50">Tentang data</p>
+              <p className="text-white/50">Tentang perairan</p>
             </div>
             <div>
-              <p className="font-semibold text-white/80 mb-2">Tim Pengembang</p>
-              <p className="text-white/50">Budi Santoso — ML Engineer</p>
-              <p className="text-white/50">Dewi Lestari — UI/UX</p>
-              <p className="text-white/50">Reza Firmansyah — Backend</p>
-              <p className="text-white/50">Siti Rahayu — Konten Ilmiah</p>
+              <p className="font-semibold text-white/80 mb-2">Connect</p>
+              <p className="text-white/50">Hubungi kami</p>
+              <p className="text-white/50">Bagikan cerita kamu</p>
+              <p className="text-white/50">Kegiatan</p>
+              <p className="text-white/50">Dapatkan update lewat email</p>
             </div>
           </div>
         </div>
-        <div className="border-t border-white/10 mt-8 pt-6 text-center text-white/40 text-xs">© 2024 Akuanesia — Pendidikan perikanan budidaya Indonesia</div>
+        <div className="border-t border-white/10 mt-8 pt-6 text-center text-white/40 text-xs">© 2024 The Fishermen UB — Pendidikan Perikanan Indonesia</div>
       </div>
     </footer>
   );
@@ -579,17 +580,24 @@ function BerandaPage({ navigate }: { navigate: (p: Page, e?: Record<string, unkn
   return (
     <div style={{ fontFamily: "Nunito, sans-serif" }}>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/90 via-cyan-600 to-teal-700 text-white">
-        <div className="absolute inset-0 opacity-10">
-          {[...Array(15)].map((_, i) => (
-            <div key={i} className="absolute rounded-full bg-white/30" style={{ width: Math.random() * 80 + 20, height: Math.random() * 80 + 20, left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%`, opacity: 0.2 }} />
-          ))}
-        </div>
+      <section className="relative overflow-hidden text-white" style={{
+        backgroundImage: "url('/hero-bg.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}>
+        <div className="absolute inset-0" style={{
+          background: "linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.05) 100%)"
+        }} />
+        <div className="absolute bottom-0 left-0 right-0" style={{
+          height: "120px",
+          background: "linear-gradient(to bottom, transparent, white)",
+          zIndex: 10
+        }} />
         <div className="relative max-w-7xl mx-auto px-6 py-20 md:py-28 grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <span className="inline-flex items-center gap-1.5 text-xs font-semibold bg-white/20 rounded-full px-3 py-1 mb-5"><Database size={12} />Platform Virtual Lab ML — Dataset IoT Kolam</span>
-            <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-5" style={{ fontFamily: "Poppins" }}>Jelajahi & Pelajari Budidaya Perikanan Indonesia</h1>
-            <p className="text-white/80 text-lg mb-8 leading-relaxed">Platform virtual lab berbasis machine learning untuk eksplorasi kecocokan ikan dan kondisi kolam budidaya air tawar.</p>
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold bg-white/20 rounded-full px-3 py-1 mb-5"><Database size={12} />Platform Virtual Lab</span>
+            <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-5" style={{ fontFamily: "Poppins" }}>Jelajahi & Pelajari Perairan Indonesia</h1>
+            <p className="text-white/80 text-lg mb-8 leading-relaxed">Platform virtual lab berbasis machine learning untuk eksplorasi kecocokan ikan dan habitat perairan Indonesia.</p>
             <div className="flex flex-wrap gap-3">
               <button onClick={() => navigate("sim1")} className="inline-flex items-center gap-2 bg-white text-primary font-bold px-6 py-3 rounded-xl hover:bg-white/90 shadow-lg">
                 Mulai Eksplorasi <ArrowRight size={16} />
@@ -599,27 +607,28 @@ function BerandaPage({ navigate }: { navigate: (p: Page, e?: Record<string, unkn
               </button>
             </div>
           </div>
-          <div className="hidden md:flex items-center justify-center">
-            <div className="relative w-64 h-64">
-              <div className="absolute inset-0 rounded-full border-2 border-white/20 animate-pulse" />
-              <div className="absolute inset-0 flex items-center justify-center text-8xl">🐟</div>
-              {["🌡️", "⚗️", "🌫️", "📡"].map((e, i) => (
-                <div key={i} className="absolute text-3xl" style={{ top: `${50 - 40 * Math.sin(i * Math.PI / 2)}%`, left: `${50 + 40 * Math.cos(i * Math.PI / 2)}%`, transform: "translate(-50%,-50%)" }}>{e}</div>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* Dataset info bar */}
-      <div className="bg-primary/5 border-b border-primary/10 py-3">
-        <div className="max-w-7xl mx-auto px-6 flex flex-wrap gap-4 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1.5"><Database size={12} className="text-primary" /><strong className="text-foreground">Dataset:</strong> realfishdataset.csv — IoT Jamalpur, Bangladesh</span>
-          <span className="flex items-center gap-1.5"><Cpu size={12} className="text-primary" /><strong className="text-foreground">Model:</strong> Random Forest</span>
-          <span className="flex items-center gap-1.5"><FlaskConical size={12} className="text-primary" /><strong className="text-foreground">Parameter:</strong> pH · Suhu · Kekeruhan</span>
-          <span className="flex items-center gap-1.5"><Fish size={12} className="text-primary" /><strong className="text-foreground">Spesies:</strong> 11 ikan air tawar</span>
+      {/* Cara Kerja */}
+      <section className="max-w-7xl mx-auto px-6 py-16">
+        <h2 className="text-2xl font-bold text-center mb-2" style={{ fontFamily: "Poppins" }}>Cara Kerja</h2>
+        <p className="text-muted-foreground text-center mb-10 text-sm">Tiga langkah mudah untuk mulai belajar ekosistem perairan Indonesia</p>
+        <div className="grid md:grid-cols-3 gap-6">
+          {[
+            { icon: <Target size={24} />, title: "Pilih Simulasi", desc: "Pilih salah satu dari =modul virtual lab sesuai level pemahamanmu.", step: "01" },
+            { icon: <Beaker size={24} />, title: "Interaksi & Eksplorasi", desc: "Uji pemahaman melalui simulasi yang menyenangkan dan praktis.", step: "02" },
+            { icon: <Award size={24} />, title: "Pelajari & Uji Diri", desc: "Baca hasil analisis AI, jelajahi database spesies, dan ikuti kuis interaktif.", step: "03" },
+          ].map((s) => (
+            <div key={s.step} className="bg-card border border-border rounded-2xl p-6 relative overflow-hidden hover:shadow-md transition-shadow">
+              <div className="absolute top-4 right-4 text-6xl font-black text-primary/5" style={{ fontFamily: "Poppins" }}>{s.step}</div>
+              <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4">{s.icon}</div>
+              <h3 className="font-bold text-base mb-2" style={{ fontFamily: "Poppins" }}>{s.title}</h3>
+              <p className="text-sm text-muted-foreground">{s.desc}</p>
+            </div>
+          ))}
         </div>
-      </div>
+      </section>
 
       {/* Lab cards */}
       <section className="bg-secondary/30 py-16">
@@ -647,17 +656,18 @@ function BerandaPage({ navigate }: { navigate: (p: Page, e?: Record<string, unkn
 
       {/* Stats */}
       <section className="max-w-7xl mx-auto px-6 py-16">
+        <h2 className="text-2xl font-bold mb-8 text-center" style={{ fontFamily: "Poppins" }}>Indonesia & Coral Triangle</h2>
         <div className="grid md:grid-cols-3 gap-6">
           {[
-            { icon: "🐟", value: "11", label: "Spesies Dianalisis", desc: "11 spesies ikan budidaya air tawar paling umum di Asia Tenggara." },
-            { icon: "📡", value: "3", label: "Parameter IoT", desc: "pH, Suhu, Kekeruhan — dipantau sensor real-time di kolam Jamalpur." },
-            { icon: "🌾", value: "4", label: "Sentra Budidaya", desc: "Klaten, Cianjur, Palembang, Banjarmasin — representasi kolam nasional." },
+            { icon: "🪸", value: "37%", label: "Terumbu Karang Dunia", desc: "Indonesia memiliki 37% terumbu karang dunia, menjadikannya pusat keanekaragaman laut global." },
+            { icon: "🐟", value: "6.000+", label: "Spesies Ikan", desc: "Lebih dari 6.000 spesies ikan ditemukan di perairan Indonesia — terkaya di planet ini." },
+            { icon: "🌊", value: "5,8 juta km²", label: "Wilayah Laut", desc: "Luas laut Indonesia mencapai 5,8 juta km², menjadikan Indonesia negara kepulauan terbesar dunia." },
           ].map((f) => (
             <div key={f.value} className="bg-gradient-to-br from-primary/5 to-teal-50 border border-primary/15 rounded-2xl p-6 text-center">
               <div className="text-4xl mb-3">{f.icon}</div>
               <div className="text-3xl font-black text-primary mb-1" style={{ fontFamily: "Poppins" }}>{f.value}</div>
               <div className="font-bold text-sm mb-2">{f.label}</div>
-              <p className="text-xs text-muted-foreground">{f.desc}</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">{f.desc}</p>
             </div>
           ))}
         </div>
@@ -693,7 +703,7 @@ function VirtualLabPage({ navigate }: { navigate: (p: Page, e?: Record<string, u
       <div className="bg-gradient-to-r from-primary to-cyan-600 text-white py-12">
         <div className="max-w-7xl mx-auto px-6">
           <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: "Poppins" }}>Virtual Lab</h1>
-          <p className="text-white/80">Eksplorasi interaktif budidaya perikanan berbasis data IoT dan Random Forest</p>
+          <p className="text-white/80">Eksplorasi interaktif budidaya perikanan berbasis data IoT</p>
         </div>
       </div>
       <div className="max-w-7xl mx-auto px-6 py-10 grid md:grid-cols-2 gap-6">
@@ -702,7 +712,7 @@ function VirtualLabPage({ navigate }: { navigate: (p: Page, e?: Record<string, u
             desc: "Pilih lokasi sentra budidaya di peta, drag & drop 11 spesies ikan, lihat analisis kecocokan berbasis sensor IoT (pH, Suhu, Kekeruhan).",
             features: ["Peta 4 sentra budidaya air tawar", "Drag & drop 11 spesies", "Analisis 3 parameter IoT", "AI quiz kontekstual 5 soal"] },
           { id: "sim2", emoji: "⚗️", title: "Simulasi Parameter Air", level: "Menengah", lc: "bg-yellow-100 text-yellow-700",
-            desc: "Atur 3 slider parameter (pH, Suhu, Kekeruhan) dan lihat prediksi Random Forest secara real-time.",
+            desc: "Atur 3 slider parameter (pH, Suhu, Kekeruhan) dan lihat prediksi secara real-time.",
             features: ["3 slider parameter IoT", "Kolam visual real-time", "Badge status otomatis", "Preset data lokasi nyata"] },
           { id: "sim3", emoji: "🌊", title: "Identifikasi Zona Budidaya", level: "Menengah", lc: "bg-yellow-100 text-yellow-700",
             desc: "Klik 5 zona sistem budidaya air tawar dan pelajari karakteristik, parameter, serta spesies khas.",
@@ -962,7 +972,6 @@ function Sim1Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
                         </tbody>
                       </table>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-2">Data: IoT Sensor Kolam {selectedLocation.shortName} | Model: Random Forest (realfishdataset.csv)</p>
                   </div>
                 ) : (
                   <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
@@ -1634,7 +1643,7 @@ function KuisPage({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
   const topics = [
     { cat: "parameter", label: "Parameter Kualitas Air", emoji: "⚗️", desc: "pH, Suhu, Kekeruhan — sensor IoT dan dampaknya bagi ikan" },
     { cat: "spesies", label: "Spesies & Habitat Ikan", emoji: "🐟", desc: "11 spesies budidaya dan preferensi parameter idealnya" },
-    { cat: "dataset", label: "Dataset IoT & Model ML", emoji: "📡", desc: "realfishdataset.csv dan Random Forest Classifier" },
+    { cat: "dataset", label: "Dataset IoT & Model ML", emoji: "📡", desc: "sensor perairan dan machine learning" },
     { cat: "ekosistem", label: "Zona Budidaya", emoji: "🌾", desc: "Kolam intensif, karamba, tambak, dan rawa alam" },
   ];
 
@@ -1817,7 +1826,7 @@ function TentangPage({ navigate }: { navigate: (p: Page, e?: Record<string, unkn
       {/* Dataset & ML Section with videos */}
       <section className="max-w-7xl mx-auto px-6 py-14">
         <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: "Poppins" }}>Tentang Dataset & Model ML</h2>
-        <p className="text-muted-foreground text-sm mb-8">Akuanesia dibangun di atas data IoT nyata dan model Random Forest Classifier</p>
+        <p className="text-muted-foreground text-sm mb-8">Akuanesia dibangun di atas data IoT nyata dan model Machine Learning</p>
         <div className="grid md:grid-cols-2 gap-8 mb-10">
           <div className="space-y-5">
             <div className="bg-card border border-border rounded-2xl p-5">
@@ -1878,7 +1887,7 @@ function TentangPage({ navigate }: { navigate: (p: Page, e?: Record<string, unkn
               Dalam budidaya kolam, ikan tidak bisa bermigrasi — sehingga pemantauan sensor IoT (pH, suhu, kekeruhan) secara real-time menjadi sangat krusial untuk mencegah kematian massal.
             </p>
             <p className="text-primary/90 text-sm bg-primary/10 rounded-xl px-4 py-3 border border-primary/20">
-              Akuanesia membantu petambak memahami batas toleransi spesies sebelum masalah muncul — mencegah kerugian dengan prediksi berbasis data IoT + Random Forest.
+              Akuanesia membantu petambak memahami batas toleransi spesies sebelum masalah muncul — mencegah kerugian dengan prediksi berbasis data IoT.
             </p>
           </div>
           <div>
@@ -1968,13 +1977,13 @@ function TentangPage({ navigate }: { navigate: (p: Page, e?: Record<string, unkn
           <div className="grid md:grid-cols-2 gap-8">
             <div>
               <h3 className="font-bold text-base mb-3" style={{ fontFamily: "Poppins" }}>Metodologi</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed mb-4">Akuanesia menggunakan Random Forest yang dilatih dengan data IoT dari realfishdataset.csv — 5 kolam budidaya di Jamalpur, Bangladesh. Model memprediksi kecocokan spesies berdasarkan 3 parameter: pH, Suhu, dan Kekeruhan.</p>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-4">Akuanesia menggunakan model ML yang dilatih dengan data IoT dari realfishdataset.csv. Model memprediksi kecocokan spesies berdasarkan 3 parameter: pH, Suhu, dan Kekeruhan.</p>
               <p className="text-sm text-muted-foreground leading-relaxed">Parameter ideal spesies bersumber dari literatur ilmiah (Boyd & Tucker, FAO, APHA) dan divalidasi pakar budidaya perikanan IPB University.</p>
             </div>
             <div>
               <h3 className="font-bold text-base mb-3" style={{ fontFamily: "Poppins" }}>Tim Pengembang</h3>
               <div className="grid grid-cols-2 gap-3">
-                {[["Budi Santoso", "ML Engineer"], ["Dewi Lestari", "UI/UX Designer"], ["Reza Firmansyah", "Backend Developer"], ["Siti Rahayu", "Konten Ilmiah"]].map(([name, role]) => (
+                {[["Yasmine Nailatul", "Project Manager"], ["Azzahra N. Diandra", "UI/UX Designer"], ["Ahmad Rayhan", "Backend Developer"], ["Najwa Tazkiya", "ML Engineer"]].map(([name, role]) => (
                   <div key={name} className="bg-card border border-border rounded-xl p-3">
                     <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center text-primary text-sm font-bold mb-2">{name[0]}</div>
                     <p className="font-semibold text-sm">{name}</p>

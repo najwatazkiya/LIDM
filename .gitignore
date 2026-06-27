@@ -1,0 +1,22 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+env/
+venv/
+ENV/
+
+# Backup directory
+old_root_files_backup/
+
+# Production builds
+front_end/dist/
+
+# Node dependencies
+node_modules/
+**/node_modules/
+
+# Environment variables
+.env

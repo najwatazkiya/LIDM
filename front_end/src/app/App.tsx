@@ -10,211 +10,42 @@ import {
   Zap, Award, ChevronLeft, Menu, Target, Download,
   Eye, MapPin, Cpu, Database, FlaskConical, Waves,
   AlertTriangle, Loader2, RotateCcw,
+  Anchor, Sprout, Trees,
 } from "lucide-react";
 
 // ============================================================
 // DATA — freshwater aquaculture (Bangladesh IoT dataset context)
 // ============================================================
+interface Location {
+  id: string;
+  name: string;
+  shortName: string;
+  cx: number;
+  cy: number;
+  params: { ph: number; temp: number; turbidity: number };
+  description: string;
+  ecosystem: string;
+  color: string;
+}
 
-const LOCATIONS = [
-  {
-    id: "klaten",
-    name: "Klaten, Jawa Tengah",
-    shortName: "Klaten",
-    cx: 49, cy: 62,
-    params: { ph: 7.2, temp: 28, turbidity: 8 },
-    description: "Sentra budidaya nila, ikan mas, dan karper di Jawa Tengah. Kualitas air kolam relatif baik dengan suhu optimal dan kekeruhan rendah.",
-    ecosystem: "Kolam Nila & Mas",
-    color: "#0891B2",
-  },
-  {
-    id: "cianjur",
-    name: "Cianjur, Jawa Barat",
-    shortName: "Cianjur",
-    cx: 44, cy: 64,
-    params: { ph: 7.0, temp: 24, turbidity: 5 },
-    description: "Dataran tinggi Cianjur dengan suhu air lebih sejuk. Ideal untuk mas, koi, dan patin. Kekeruhan sangat rendah berkat sumber mata air gunung.",
-    ecosystem: "Kolam Mas & Koi",
-    color: "#10B981",
-  },
-  {
-    id: "palembang",
-    name: "Palembang, Sumatera Selatan",
-    shortName: "Palembang",
-    cx: 38, cy: 58,
-    params: { ph: 6.8, temp: 30, turbidity: 15 },
-    description: "Sentra patin dan nila di sekitar Sungai Musi. Suhu tinggi khas Sumatera, pH sedikit asam, kekeruhan lebih tinggi dari aliran sungai.",
-    ecosystem: "Karamba Patin",
-    color: "#F59E0B",
-  },
-  {
-    id: "banjarmasin",
-    name: "Banjarmasin, Kalimantan Selatan",
-    shortName: "Banjarmasin",
-    cx: 60, cy: 56,
-    params: { ph: 6.5, temp: 29, turbidity: 20 },
-    description: "Budidaya di lahan rawa gambut Kalimantan. pH rendah khas gambut, suhu hangat, kekeruhan lebih tinggi. Cocok untuk spesies toleran asam.",
-    ecosystem: "Rawa Gambut",
-    color: "#8B5CF6",
-  },
-];
+interface Fish {
+  id: string;
+  name: string;
+  scientific: string;
+  category: string;
+  habitat: string;
+  bg: string;
+  image: string;
+  params: { ph: number[]; temp: number[]; turbidity: number[] };
+  story: string;
+  habitat_detail: string;
+  diet: string;
+  fact: string;
+  conservation: string;
+}
 
-const FISH_DATA = [
-  {
-    id: "nila",
-    name: "Ikan Nila",
-    scientific: "Oreochromis niloticus",
-    category: "Tawar",
-    habitat: "Kolam Budidaya",
-    bg: "from-teal-400 to-cyan-500",
-    params: { ph: [6.5, 8.5], temp: [25, 32], turbidity: [5, 25] },
-    story: "Nila adalah primadona budidaya air tawar Indonesia. Adaptasinya tinggi, pertumbuhannya cepat, dan toleransinya luas terhadap variasi kualitas air menjadikannya spesies unggulan.",
-    habitat_detail: "Kolam tanah, kolam beton, dan karamba di perairan tawar tropis. Berasal dari Afrika Timur, kini tersebar luas.",
-    diet: "Omnivora — alga, fitoplankton, dedaunan, dan pakan pelet buatan.",
-    fact: "Nila jantan tumbuh 2x lebih cepat dari betina — teknik budidaya monosex jantan kini dominan di industri.",
-    conservation: "Least Concern — salah satu spesies budidaya terpenting dunia. Namun dianggap invasif di ekosistem alami.",
-  },
-  {
-    id: "rohu",
-    name: "Rohu / Rui",
-    scientific: "Labeo rohita",
-    category: "Tawar",
-    habitat: "Kolam & Sungai",
-    bg: "from-orange-400 to-amber-500",
-    params: { ph: [7.0, 8.5], temp: [24, 32], turbidity: [5, 20] },
-    story: "Rohu adalah ikan mas air tawar asli Asia Selatan yang sangat populer di budidaya kolam Bangladesh dan India. Ikan ini berperan penting dalam sistem budidaya polikultur.",
-    habitat_detail: "Sungai besar dan kolam budidaya di anak benua Asia Selatan. Di Indonesia mulai dibudidayakan secara terbatas.",
-    diet: "Herbivora — fitoplankton, perifiton, dan detritus organik di dasar kolam.",
-    fact: "Rohu dapat tumbuh hingga 2 kg dalam 12 bulan di kondisi budidaya optimal — salah satu laju pertumbuhan tertinggi di kelompok ikan karpioidae.",
-    conservation: "Least Concern — spesies budidaya utama di Bangladesh, India, dan Pakistan.",
-  },
-  {
-    id: "patin",
-    name: "Patin / Pangas",
-    scientific: "Pangasianodon hypophthalmus",
-    category: "Tawar",
-    habitat: "Sungai & Karamba",
-    bg: "from-blue-400 to-indigo-500",
-    params: { ph: [6.5, 8.0], temp: [26, 32], turbidity: [10, 30] },
-    story: "Patin adalah ikan sungai tropis yang kini menjadi komoditas ekspor utama Vietnam dan Indonesia. Daging putihnya diminati pasar internasional.",
-    habitat_detail: "Sungai besar tropis Asia Tenggara (Mekong, Musi, dll) dan karamba jaring apung.",
-    diet: "Omnivora oportunistik — ikan kecil, crustacea, detritus, dan pakan buatan.",
-    fact: "Patin bisa bermigrasi ratusan kilometer di sungai besar untuk memijah — fenomena yang mendorong pengelolaan tangkapan terkoordinasi.",
-    conservation: "Least Concern secara global, namun populasi liar menurun karena perubahan aliran sungai.",
-  },
-  {
-    id: "silvercup",
-    name: "Mas Perak / Silver Carp",
-    scientific: "Hypophthalmichthys molitrix",
-    category: "Tawar",
-    habitat: "Waduk & Danau",
-    bg: "from-gray-300 to-slate-400",
-    params: { ph: [7.0, 8.5], temp: [20, 30], turbidity: [5, 20] },
-    story: "Silver Carp dikenal luas di budidaya polikultur Asia sebagai 'pembersih' kolam — menyaring fitoplankton dan menjaga keseimbangan ekologi kolam budidaya.",
-    habitat_detail: "Sungai besar dan waduk di Asia Timur dan Asia Tengah. Di Indonesia dibudidayakan terbatas.",
-    diet: "Filter feeder — menyaring fitoplankton dan detritus halus dari kolom air.",
-    fact: "Silver Carp bisa melompat hingga 3 meter ke udara saat terkejut — menjadikannya risiko keselamatan bagi pengemudi perahu di sungai yang telah terinvasi.",
-    conservation: "Spesies invasif di Amerika Utara, namun penting untuk budidaya di Asia.",
-  },
-  {
-    id: "katla",
-    name: "Katla",
-    scientific: "Catla catla",
-    category: "Tawar",
-    habitat: "Kolam & Sungai",
-    bg: "from-emerald-400 to-green-500",
-    params: { ph: [7.0, 8.5], temp: [24, 32], turbidity: [5, 20] },
-    story: "Katla adalah ikan terbesar dalam sistem budidaya polikultur Asia Selatan. Pertumbuhannya cepat dan dagingnya bernilai ekonomi tinggi di Bangladesh dan India.",
-    habitat_detail: "Sungai dan kolam budidaya di anak benua India. Menempati lapisan permukaan dalam polikultur.",
-    diet: "Zooplankton, fitoplankton, dan pakan tambahan — berenang di lapisan permukaan kolam.",
-    fact: "Dalam sistem polikultur South Asian Composite Carp Culture, Katla, Rohu, dan Mrigal dibudidayakan bersama memanfaatkan zona kolam berbeda.",
-    conservation: "Near Threatened — populasi sungai menurun akibat modifikasi habitat dan penangkapan berlebihan.",
-  },
-  {
-    id: "singhi",
-    name: "Singhi / Ikan Duri",
-    scientific: "Heteropneustes fossilis",
-    category: "Tawar",
-    habitat: "Rawa & Kolam",
-    bg: "from-yellow-500 to-amber-600",
-    params: { ph: [6.0, 8.0], temp: [24, 34], turbidity: [10, 35] },
-    story: "Singhi adalah ikan lele berduri Asia Selatan yang dikenal sebagai 'ikan obat' di Bangladesh. Memiliki organ pernapasan udara tambahan yang memungkinkan hidup di kolam dangkal.",
-    habitat_detail: "Rawa, kolam dangkal, sawah, dan perairan yang kering secara musiman di Asia Selatan.",
-    diet: "Omnivora — serangga air, cacing, siput, dan detritus organik.",
-    fact: "Singhi memiliki kelenjar racun di duri siripnya — suntikan bisa menyebabkan rasa sakit hebat selama beberapa jam.",
-    conservation: "Least Concern — populasi stabil, penting untuk ketahanan pangan komunitas pedesaan.",
-  },
-  {
-    id: "udang",
-    name: "Udang Air Tawar",
-    scientific: "Macrobrachium sp.",
-    category: "Tawar",
-    habitat: "Sungai & Kolam",
-    bg: "from-pink-400 to-rose-500",
-    params: { ph: [7.0, 8.5], temp: [24, 30], turbidity: [5, 15] },
-    story: "Udang Macrobrachium adalah udang air tawar yang bernilai ekonomi tinggi. Dikenal sebagai udang galah di Indonesia, sangat diminati pasar lokal dan ekspor.",
-    habitat_detail: "Sungai berarus lambat, muara, dan kolam budidaya di daerah tropis Asia Selatan dan Asia Tenggara.",
-    diet: "Omnivora benthik — alga, detritus, serangga air, dan pakan buatan.",
-    fact: "Udang galah jantan memiliki capit yang sangat panjang — hingga 1,5 kali panjang tubuhnya — digunakan untuk bersaing dengan jantan lain.",
-    conservation: "Least Concern — dibudidayakan secara luas, namun populasi liar terancam overfishing.",
-  },
-  {
-    id: "mas",
-    name: "Ikan Mas / Karpio",
-    scientific: "Cyprinus carpio",
-    category: "Tawar",
-    habitat: "Kolam & Sungai",
-    bg: "from-amber-300 to-yellow-500",
-    params: { ph: [6.5, 8.5], temp: [15, 30], turbidity: [5, 25] },
-    story: "Ikan mas adalah salah satu spesies budidaya tertua manusia — dibudidayakan lebih dari 2.000 tahun di China. Di Indonesia, ikan mas adalah ikan kolam paling populer.",
-    habitat_detail: "Kolam, danau, dan sungai berarus lambat di zona beriklim sedang hingga tropis.",
-    diet: "Omnivora benthik — invertebrata, tumbuhan air, detritus, dan pakan pelet.",
-    fact: "Ikan mas adalah spesies ikan budidaya tertua dunia dan memiliki ratusan varietas domestik yang dikembangkan manusia selama milenium.",
-    conservation: "Least Concern — namun invasif dan merusak ekosistem alami di banyak negara.",
-  },
-  {
-    id: "prawn",
-    name: "Udang Galah",
-    scientific: "Macrobrachium rosenbergii",
-    category: "Tawar",
-    habitat: "Kolam & Muara",
-    bg: "from-red-400 to-pink-500",
-    params: { ph: [7.0, 8.5], temp: [26, 31], turbidity: [5, 15] },
-    story: "Udang galah adalah spesies udang air tawar terbesar di dunia. Nilainya sangat tinggi di pasar — sering disebut 'lobster air tawar' di restoran.",
-    habitat_detail: "Muara sungai untuk reproduksi, kemudian bermigrasi ke perairan tawar untuk tumbuh dewasa.",
-    diet: "Omnivora oportunistik — ikan, crustacea, serangga, dan organik mati.",
-    fact: "Siklus hidup unik: larva harus masuk air asin/payau untuk berkembang, lalu juvenil bermigrasi ke air tawar — perlu dikelola khusus dalam budidaya.",
-    conservation: "Least Concern secara global, namun over-eksploitasi mengancam populasi liar di Asia.",
-  },
-  {
-    id: "koi",
-    name: "Ikan Koi",
-    scientific: "Cyprinus carpio var. koi",
-    category: "Tawar",
-    habitat: "Kolam Ornamental",
-    bg: "from-violet-400 to-purple-600",
-    params: { ph: [6.8, 8.2], temp: [15, 28], turbidity: [3, 15] },
-    story: "Koi adalah varietas dekoratif ikan mas yang dikembangkan di Jepang. Nilai satu ekor koi berkualitas kompetisi bisa mencapai ratusan juta rupiah.",
-    habitat_detail: "Kolam ornamental dengan sirkulasi baik, filtrasi tinggi, dan kejernihan air prima.",
-    diet: "Omnivora — pakan khusus koi, cacing, dan organik alami.",
-    fact: "Koi bisa hidup hingga 35 tahun (beberapa rekaman mencapai 200 tahun). Warna cerahnya membuat mereka rentan terhadap predator di alam.",
-    conservation: "Least Concern — spesies budidaya ornamental, tidak ada status konservasi khusus.",
-  },
-  {
-    id: "lele",
-    name: "Lele / Magur",
-    scientific: "Clarias magur",
-    category: "Tawar",
-    habitat: "Kolam & Rawa",
-    bg: "from-stone-400 to-gray-600",
-    params: { ph: [6.0, 9.0], temp: [22, 35], turbidity: [10, 40] },
-    story: "Lele magur adalah lele Asia Selatan yang dikenal sebagai 'walking catfish' — bisa berjalan di darat dan menghirup udara. Toleransi ekstremnya membuatnya ideal untuk budidaya di kondisi sulit.",
-    habitat_detail: "Kolam, sawah, rawa, dan perairan dangkal berlumpur di Asia Selatan dan Asia Tenggara.",
-    diet: "Omnivora oportunistik — segalanya dari serangga hingga bangkai.",
-    fact: "Lele magur terdaftar sebagai salah satu dari 100 spesies invasif paling berbahaya dunia (IUCN) karena kemampuannya berjalan dan bertahan di luar air.",
-    conservation: "Least Concern — populasi liar stabil, komoditas budidaya penting untuk ketahanan pangan.",
-  },
-];
+let LOCATIONS: Location[] = [];
+let FISH_DATA: Fish[] = [];
 
 const QUIZ_QUESTIONS = [
   {
@@ -275,6 +106,73 @@ interface ParamDetail {
   idealMax: number;
   unit: string;
   inRange: boolean;
+}
+
+const ML_SPECIES_MAP: Record<string, string> = {
+  nila: "tilapia",
+  rohu: "rui",
+  patin: "pangas",
+  silvercup: "silverCup",
+  katla: "katla",
+  singhi: "sing",
+  udang: "shrimp",
+  mas: "karpio",
+  prawn: "prawn",
+  koi: "koi",
+  lele: "magur",
+};
+
+interface BackendRecommendationResponse {
+  status: string;
+  input_data: {
+    species: string;
+    ph: number;
+    temperature: number;
+    turbidity: number;
+  };
+  machine_learning_result: {
+    status: string;
+    timestamp: string;
+    fish_name: string;
+    evaluation: {
+      recommendation: "recommended" | "possible" | "not_recommended";
+      confidence: number;
+      confidence_label: string;
+      top_alternatives: Array<{ fish: string; confidence: number }>;
+    };
+    station: {
+      water_quality_status: "good" | "warning" | "critical";
+      parameter_analysis: Record<string, {
+        value: number;
+        status: "optimal" | "warning" | "critical";
+        message: string;
+        optimal_range: { min: number; max: number };
+      }>;
+    };
+  };
+  ai_interpretation: string;
+}
+
+async function fetchRecommendation(speciesId: string, ph: number, temp: number, turbidity: number, localStatus: string, details: any[] = []): Promise<BackendRecommendationResponse> {
+  const backendSpecies = ML_SPECIES_MAP[speciesId] || speciesId;
+  const res = await fetch("http://localhost:8000/api/recommendation", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      species: backendSpecies,
+      ph,
+      temperature: temp,
+      turbidity,
+      local_status: localStatus,
+      details: details,
+    }),
+  });
+  if (!res.ok) {
+    throw new Error(`HTTP error! status: ${res.status}`);
+  }
+  return res.json();
 }
 
 function checkCompatibility(fish: typeof FISH_DATA[0], loc: typeof LOCATIONS[0]) {
@@ -377,7 +275,7 @@ type Page = "beranda" | "virtual-lab" | "sim1" | "sim2" | "sim3" | "database" | 
 function Navbar({ page, navigate }: { page: Page; navigate: (p: Page, e?: Record<string, unknown>) => void }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const links: { id: Page; label: string }[] = [
-    { id: "beranda", label: "Beranda"},
+    { id: "beranda", label: "Beranda" },
     { id: "virtual-lab", label: "Virtual Lab" },
     { id: "database", label: "Database Ikan" },
     { id: "kuis", label: "Kuis" },
@@ -708,17 +606,25 @@ function VirtualLabPage({ navigate }: { navigate: (p: Page, e?: Record<string, u
       </div>
       <div className="max-w-7xl mx-auto px-6 py-10 grid md:grid-cols-2 gap-6">
         {[
-          { id: "sim1", emoji: "🗺️", title: "Eksplorasi Kolam Indonesia", level: "Dasar", lc: "bg-green-100 text-green-700",
+          {
+            id: "sim1", emoji: "🗺️", title: "Eksplorasi Kolam Indonesia", level: "Dasar", lc: "bg-green-100 text-green-700",
             desc: "Pilih lokasi sentra budidaya di peta, drag & drop 11 spesies ikan, lihat analisis kecocokan berbasis sensor IoT (pH, Suhu, Kekeruhan).",
-            features: ["Peta 4 sentra budidaya air tawar", "Drag & drop 11 spesies", "Analisis 3 parameter IoT", "AI quiz kontekstual 5 soal"] },
-          { id: "sim2", emoji: "⚗️", title: "Simulasi Parameter Air", level: "Menengah", lc: "bg-yellow-100 text-yellow-700",
+            features: ["Peta 4 sentra budidaya air tawar", "Drag & drop 11 spesies", "Analisis 3 parameter IoT", "AI quiz kontekstual 5 soal"]
+          },
+          {
+            id: "sim2", emoji: "⚗️", title: "Simulasi Parameter Air", level: "Menengah", lc: "bg-yellow-100 text-yellow-700",
             desc: "Atur 3 slider parameter (pH, Suhu, Kekeruhan) dan lihat prediksi secara real-time.",
-            features: ["3 slider parameter IoT", "Kolam visual real-time", "Badge status otomatis", "Preset data lokasi nyata"] },
-          { id: "sim3", emoji: "🌊", title: "Identifikasi Zona Budidaya", level: "Menengah", lc: "bg-yellow-100 text-yellow-700",
+            features: ["3 slider parameter IoT", "Kolam visual real-time", "Badge status otomatis", "Preset data lokasi nyata"]
+          },
+          {
+            id: "sim3", emoji: "🌊", title: "Identifikasi Zona Budidaya", level: "Menengah", lc: "bg-yellow-100 text-yellow-700",
             desc: "Klik 5 zona sistem budidaya air tawar dan pelajari karakteristik, parameter, serta spesies khas.",
-            features: ["5 zona budidaya klikable", "Video edukasi per zona", "Profil spesies per sistem", "Tabel parameter rata-rata"] },
-          { id: "sim4", emoji: "🔒", title: "Simulasi Dampak Pencemaran", level: "Coming Soon", lc: "bg-gray-100 text-gray-500",
-            desc: "Simulasikan dampak polutan terhadap kualitas kolam.", disabled: true, features: ["Segera hadir"] },
+            features: ["5 zona budidaya klikable", "Video edukasi per zona", "Profil spesies per sistem", "Tabel parameter rata-rata"]
+          },
+          {
+            id: "sim4", emoji: "🔒", title: "Simulasi Dampak Pencemaran", level: "Coming Soon", lc: "bg-gray-100 text-gray-500",
+            desc: "Simulasikan dampak polutan terhadap kualitas kolam.", disabled: true, features: ["Segera hadir"]
+          },
         ].map((lab) => (
           <div key={lab.id} className={`bg-card border border-border rounded-2xl overflow-hidden flex flex-col ${(lab as { disabled?: boolean }).disabled ? "opacity-60" : "hover:shadow-lg transition-shadow"}`}>
             <div className={`h-36 flex items-center justify-center text-6xl ${(lab as { disabled?: boolean }).disabled ? "bg-muted" : "bg-gradient-to-br from-primary/15 to-teal-400/15"}`}>{lab.emoji}</div>
@@ -748,6 +654,49 @@ function VirtualLabPage({ navigate }: { navigate: (p: Page, e?: Record<string, u
   );
 }
 
+// Helper to parse basic markdown-like syntax from AI output
+function parseFormattedText(text: string) {
+  if (!text) return null;
+  return text.split("\n").map((line, i) => {
+    // Process bold text (**text**)
+    const parts = line.split(/\*\*([^*]+)\*\*/g);
+    const content = parts.map((part, j) => {
+      if (j % 2 === 1) {
+        return <strong key={j} className="font-bold text-primary">{part}</strong>;
+      }
+      return part;
+    });
+
+    // Check if line is a bullet point
+    const trimmed = line.trim();
+    if (trimmed.startsWith("-") || trimmed.startsWith("•")) {
+      const bulletText = trimmed.replace(/^[-•]\s*/, "");
+      const partsBullet = bulletText.split(/\*\*([^*]+)\*\*/g);
+      const contentBullet = partsBullet.map((part, j) => {
+        if (j % 2 === 1) {
+          return <strong key={j} className="font-bold text-primary">{part}</strong>;
+        }
+        return part;
+      });
+      return (
+        <li key={i} className="ml-4 list-disc text-sm text-foreground/90 my-1 leading-relaxed">
+          {contentBullet}
+        </li>
+      );
+    }
+
+    if (trimmed === "") {
+      return <div key={i} className="h-2" />;
+    }
+
+    return (
+      <p key={i} className="text-sm leading-relaxed text-foreground/90 my-1">
+        {content}
+      </p>
+    );
+  });
+}
+
 // ============================================================
 // PAGE: SIMULASI 1
 // ============================================================
@@ -762,6 +711,17 @@ function Sim1Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
   const [chartParam, setChartParam] = useState("ph");
   const [draggingFish, setDraggingFish] = useState<typeof FISH_DATA[0] | null>(null);
   const [pondHighlight, setPondHighlight] = useState(false);
+  const [zoomIsland, setZoomIsland] = useState<"all" | "jawa">("all");
+  const [zoomFactor, setZoomFactor] = useState(1.0);
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStart = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    if (zoomFactor <= 1.0) {
+      setPanOffset({ x: 0, y: 0 });
+    }
+  }, [zoomFactor]);
 
   const filteredFish = FISH_DATA.filter((f) =>
     f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -769,6 +729,36 @@ function Sim1Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
   );
 
   const result = droppedFish && selectedLocation ? checkCompatibility(droppedFish, selectedLocation) : null;
+
+  const [backendResult, setBackendResult] = useState<BackendRecommendationResponse | null>(null);
+  const [loadingBackend, setLoadingBackend] = useState(false);
+  const [backendError, setBackendError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (droppedFish && selectedLocation) {
+      setLoadingBackend(true);
+      setBackendError(null);
+      setBackendResult(null);
+      const localStat = result?.status || "cocok";
+      const details = result?.details || [];
+      fetchRecommendation(droppedFish.id, selectedLocation.params.ph, selectedLocation.params.temp, selectedLocation.params.turbidity, localStat, details)
+        .then((data) => {
+          setBackendResult(data);
+          setLoadingBackend(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          setBackendError("Gagal menghubungkan ke backend. Menggunakan kalkulasi lokal.");
+          setLoadingBackend(false);
+        });
+    } else {
+      setBackendResult(null);
+      setLoadingBackend(false);
+      setBackendError(null);
+    }
+  }, [droppedFish, selectedLocation]);
+
+  const mappedStatus = result?.status || "cocok";
 
   const handleDrop = useCallback(() => {
     if (!selectedLocation || !draggingFish) return;
@@ -783,10 +773,249 @@ function Sim1Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
 
   const histData = selectedLocation ? genHistoricalData(selectedLocation.params[chartParam as keyof typeof selectedLocation.params] as number, paramLabels[chartParam].variance) : [];
 
-  const pondBg = !result ? "from-blue-200 to-cyan-300" :
-    result.status === "cocok" ? "from-green-200 to-teal-300" :
-    result.status === "kurang_ideal" ? "from-yellow-100 to-amber-200" :
-    "from-red-100 to-red-200";
+  const pondBg = !mappedStatus ? "from-blue-200 to-cyan-300" :
+    mappedStatus === "cocok" ? "from-green-200 to-teal-300" :
+      mappedStatus === "kurang_ideal" ? "from-yellow-100 to-amber-200" :
+        "from-red-100 to-red-200";
+
+  const handleExportPDF = () => {
+    if (!droppedFish || !selectedLocation) return;
+
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      alert("Gagal membuka jendela cetak. Pastikan pop-up blocker dimatikan.");
+      return;
+    }
+
+    const dateStr = new Date().toLocaleDateString("id-ID", {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+
+    const statusColors = {
+      cocok: { label: "COCOK (Optimal)", color: "#16a34a", bg: "#f0fdf4", border: "#bbf7d0" },
+      kurang_ideal: { label: "KURANG IDEAL (Stres Ringan)", color: "#ca8a04", bg: "#fef9c3", border: "#fef08a" },
+      tidak_cocok: { label: "TIDAK COCOK (Kritis)", color: "#dc2626", bg: "#fef2f2", border: "#fecaca" }
+    };
+    const currentStatus = statusColors[mappedStatus as keyof typeof statusColors] || statusColors.cocok;
+
+    // Parameter checks
+    const detailsHtml = result ? result.details.map(d => `
+      <div style="border: 1px solid ${d.inRange ? '#bbf7d0' : '#fecaca'}; padding: 16px; border-radius: 12px; background-color: ${d.inRange ? '#f0fdf4' : '#fef2f2'}; text-align: center;">
+        <div style="font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em;">${d.label}</div>
+        <div style="font-size: 24px; font-weight: 800; color: ${d.inRange ? '#15803d' : '#b91c1c'}; font-family: monospace; margin-bottom: 6px;">
+          ${d.value}${d.unit}
+        </div>
+        <div style="font-size: 11px; color: #475569; margin-bottom: 4px;">Ideal: ${d.idealMin} – ${d.idealMax}${d.unit}</div>
+        <div style="font-size: 12px; font-weight: 700; color: ${d.inRange ? '#16a34a' : '#dc2626'};">
+          ${d.inRange ? '✓ OK (Ideal)' : '✗ Di Luar Toleransi'}
+        </div>
+      </div>
+    `).join('') : '';
+
+    const formatMarkdownToHtml = (text: string) => {
+      if (!text) return '';
+      return text.split('\n').map(line => {
+        const trimmed = line.trim();
+        const processed = trimmed.replace(/\*\*([^*]+)\*\*/g, '<strong style="color: #0891b2; font-weight: 700;">$1</strong>');
+        if (trimmed.startsWith('-') || trimmed.startsWith('•')) {
+          return `<li style="margin: 6px 0 6px 16px; list-style-type: disc;">${processed.replace(/^[-•]\s*/, '')}</li>`;
+        }
+        if (trimmed === '') {
+          return '<div style="height: 8px;"></div>';
+        }
+        return `<p style="margin: 6px 0; line-height: 1.6;">${processed}</p>`;
+      }).join('');
+    };
+
+    // Narrative section
+    let interpretationHtml = '';
+    if (backendResult) {
+      interpretationHtml = `
+        <div style="margin-top: 24px; padding: 24px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #f8fafc;">
+          <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; font-weight: 700; font-family: 'Plus Jakarta Sans', sans-serif;">
+            🤖 Prediksi ML & Interpretasi AI
+          </h3>
+          <div style="font-size: 13px; color: #334155; line-height: 1.6;">
+            ${formatMarkdownToHtml(backendResult.ai_interpretation)}
+          </div>
+          <div style="margin-top: 16px; padding-top: 12px; border-top: 1px dashed #e2e8f0; font-size: 11px; color: #64748b; display: flex; justify-content: space-between; font-weight: 500;">
+            <span>Confidence Level: ${(backendResult.machine_learning_result.evaluation.confidence * 100).toFixed(1)}% (${backendResult.machine_learning_result.evaluation.confidence_label})</span>
+            <span>Model: Random Forest Classifier</span>
+          </div>
+        </div>
+      `;
+    } else {
+      const fallbackText = mappedStatus === "cocok"
+        ? `${droppedFish.name} diprediksi menunjukkan pertumbuhan optimal di ${selectedLocation.name}. pH ${selectedLocation.params.ph}, suhu ${selectedLocation.params.temp}°C, dan kekeruhan ${selectedLocation.params.turbidity} NTU semuanya dalam toleransi fisiologis.`
+        : mappedStatus === "kurang_ideal"
+          ? `${droppedFish.name} kemungkinan mengalami stres fisiologis ringan di ${selectedLocation.name}. Satu parameter di luar toleransi dapat menurunkan efisiensi pakan dan laju pertumbuhan.`
+          : `${droppedFish.name} diprediksi tidak tumbuh optimal di ${selectedLocation.name}. Model merekomendasikan evaluasi lokasi lain atau penyesuaian kondisi air kolam.`;
+      interpretationHtml = `
+        <div style="margin-top: 24px; padding: 24px; border: 1px dashed #cbd5e1; border-radius: 16px; background-color: #f8fafc;">
+          <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #0f172a; border-bottom: 1px dashed #cbd5e1; padding-bottom: 8px; font-weight: 700; font-family: 'Plus Jakarta Sans', sans-serif;">
+            💻 Prediksi Model Machine Learning (Offline)
+          </h3>
+          <div style="font-size: 13px; color: #334155; line-height: 1.6; margin: 0 0 12px 0;">
+            ${fallbackText}
+          </div>
+          <div style="font-size: 11px; color: #94a3b8; font-style: italic; border-top: 1px solid #f1f5f9; padding-top: 8px; font-weight: 500;">
+            Dataset: realfishdataset.csv (Jamalpur, Bangladesh) | Pengujian Lokal Offline
+          </div>
+        </div>
+      `;
+    }
+
+    const historicalParamsHtml = `
+      <div style="margin-top: 24px; padding: 24px; border: 1px solid #e2e8f0; border-radius: 16px;">
+        <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #0f172a; font-weight: 700; font-family: 'Plus Jakarta Sans', sans-serif;">📊 Deskripsi & Informasi Spesies</h3>
+        <p style="font-size: 13px; color: #475569; line-height: 1.6; margin-bottom: 16px;">
+          ${droppedFish.story}
+        </p>
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+          <thead>
+            <tr style="background-color: #f8fafc;">
+              <th style="text-align: left; padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 700; color: #475569; width: 180px;">Faktor Ekologi</th>
+              <th style="text-align: left; padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 700; color: #475569;">Spesifikasi Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding: 10px; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #1e293b;">Habitat Asli</td>
+              <td style="padding: 10px; border-bottom: 1px solid #f1f5f9; color: #475569; line-height: 1.5;">${droppedFish.habitat_detail}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #1e293b;">Pola Makan</td>
+              <td style="padding: 10px; border-bottom: 1px solid #f1f5f9; color: #475569; line-height: 1.5;">${droppedFish.diet}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #1e293b;">Fakta & Konservasi</td>
+              <td style="padding: 10px; border-bottom: 1px solid #f1f5f9; color: #475569; line-height: 1.5;">${droppedFish.conservation}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8" />
+          <title>Hasil Analisis Akuanesia — ${droppedFish.name} di ${selectedLocation.shortName}</title>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+            body {
+              font-family: 'Plus Jakarta Sans', sans-serif;
+              color: #1e293b;
+              line-height: 1.5;
+              padding: 40px;
+              max-width: 800px;
+              margin: 0 auto;
+            }
+            .header-container {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              border-bottom: 2px solid #0891b2;
+              padding-bottom: 20px;
+              margin-bottom: 30px;
+            }
+            .logo-text {
+              font-size: 26px;
+              font-weight: 800;
+              color: #0891b2;
+              letter-spacing: -0.02em;
+            }
+            .status-badge {
+              display: inline-block;
+              padding: 8px 20px;
+              border-radius: 9999px;
+              font-weight: 700;
+              font-size: 12px;
+              color: ${currentStatus.color};
+              background-color: ${currentStatus.bg};
+              border: 1px solid ${currentStatus.border};
+              text-transform: uppercase;
+              letter-spacing: 0.05em;
+            }
+            @media print {
+              body {
+                padding: 10px;
+              }
+              .no-print {
+                display: none !important;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header-container">
+            <div>
+              <div class="logo-text">Akuanesia</div>
+              <div style="font-size: 11px; color: #64748b; margin-top: 4px; font-weight: 600;">Laporan Analisis Kelayakan Akuakultur</div>
+            </div>
+            <div class="no-print">
+              <button onclick="window.print();" style="background-color: #0891b2; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; font-family: 'Plus Jakarta Sans', sans-serif; box-shadow: 0 4px 6px -1px rgba(8, 145, 178, 0.2); transition: all 0.2s;">
+                Cetak / Simpan PDF
+              </button>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 28px;">
+            <h1 style="font-size: 24px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0; letter-spacing: -0.01em;">Laporan Kecocokan Kualitas Air Kolam</h1>
+            <p style="font-size: 13px; color: #64748b; margin: 0;">Laporan dibuat pada: <strong>${dateStr}</strong></p>
+          </div>
+
+          <!-- Target & Location Info Card -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 20px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #f8fafc; margin-bottom: 24px;">
+            <div>
+              <div style="font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 6px;">Spesies Target</div>
+              <div style="font-size: 18px; font-weight: 800; color: #0f172a;">${droppedFish.name}</div>
+              <div style="font-size: 13px; color: #0891b2; font-style: italic; font-weight: 600; margin-top: 2px;">${droppedFish.scientific}</div>
+            </div>
+            <div>
+              <div style="font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 6px;">Lokasi Pemantauan</div>
+              <div style="font-size: 18px; font-weight: 800; color: #0f172a;">${selectedLocation.name}</div>
+              <div style="font-size: 13px; color: #475569; font-weight: 600; margin-top: 2px;">Ekosistem: ${selectedLocation.ecosystem}</div>
+            </div>
+          </div>
+
+          <!-- Overall Suitability Status -->
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border: 1px solid #e2e8f0; border-radius: 16px; margin-bottom: 24px;">
+            <div style="font-size: 15px; font-weight: 700; color: #334155;">Status Kelayakan Keseluruhan:</div>
+            <div class="status-badge">${currentStatus.label}</div>
+          </div>
+
+          <!-- IoT Sensor Results -->
+          <div>
+            <h2 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0 0 14px 0;">Hasil Pengukuran Parameter Real-time</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+              ${detailsHtml}
+            </div>
+          </div>
+
+          <!-- Prediction & AI narrative -->
+          ${interpretationHtml}
+
+          <!-- Extra Species Info and Story -->
+          ${historicalParamsHtml}
+
+          <div style="margin-top: 48px; border-top: 1px solid #e2e8f0; padding-top: 24px; text-align: center; font-size: 11px; color: #94a3b8; font-weight: 500;">
+            Laporan Analisis Akuanesia. Dibuat menggunakan virtual lab terintegrasi dengan machine learning dan model bahasa AI.
+          </div>
+
+          <script>
+            window.onload = function() {
+              setTimeout(function() {
+                window.print();
+              }, 500);
+            }
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
 
   return (
     <div style={{ fontFamily: "Nunito, sans-serif" }}>
@@ -804,34 +1033,221 @@ function Sim1Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
         <div className="lg:col-span-2 space-y-5">
           {/* MAP */}
           <div className="bg-card border border-border rounded-2xl overflow-hidden">
-            <div className="px-5 py-3 border-b border-border flex items-center justify-between">
+            <div className="px-5 py-3 border-b border-border flex items-center justify-between flex-wrap gap-2">
               <h2 className="font-bold text-sm" style={{ fontFamily: "Poppins" }}>🗺️ Peta Sentra Budidaya Air Tawar Indonesia</h2>
-              <span className="text-xs text-muted-foreground">Klik marker untuk pilih lokasi</span>
-            </div>
-            <div className="relative bg-gradient-to-br from-green-50 to-teal-50" style={{ aspectRatio: "2.5/1" }}>
-              <svg viewBox="0 0 200 80" className="w-full h-full absolute inset-0 p-3">
-                <path d="M18,38 Q22,33 28,35 Q34,37 38,42 Q40,48 36,52 Q30,55 24,50 Q18,46 18,38Z" fill="#D1FAE5" stroke="#059669" strokeWidth="0.5" opacity="0.7" />
-                <path d="M36,50 Q44,46 52,48 Q58,50 62,53 Q64,57 60,60 Q52,62 44,60 Q38,57 36,50Z" fill="#D1FAE5" stroke="#059669" strokeWidth="0.5" opacity="0.7" />
-                <path d="M55,30 Q65,25 75,28 Q82,32 80,42 Q78,50 70,54 Q62,56 56,50 Q50,42 55,30Z" fill="#D1FAE5" stroke="#059669" strokeWidth="0.5" opacity="0.7" />
-                <path d="M80,28 Q85,24 90,27 Q93,32 90,38 Q86,42 82,40 Q78,35 80,28Z" fill="#D1FAE5" stroke="#059669" strokeWidth="0.5" opacity="0.7" />
-                <path d="M130,35 Q142,30 155,32 Q165,35 165,45 Q163,55 150,55 Q138,55 130,48 Q126,42 130,35Z" fill="#D1FAE5" stroke="#059669" strokeWidth="0.5" opacity="0.7" />
-                <text x="100" y="73" textAnchor="middle" fontSize="4" fill="#0891B2" opacity="0.5">Perairan Nusantara</text>
-              </svg>
-              <div className="absolute inset-0">
-                {LOCATIONS.map((loc) => (
-                  <button key={loc.id} onClick={() => { setSelectedLocation(loc); setDroppedFish(null); setShowResult(false); }}
-                    className="absolute group" style={{ left: `${loc.cx}%`, top: `${loc.cy}%`, transform: "translate(-50%,-50%)" }}>
-                    <div className={`relative transition-all ${selectedLocation?.id === loc.id ? "scale-125" : "hover:scale-110"}`}>
-                      <div className="absolute inset-0 rounded-full animate-ping opacity-40" style={{ backgroundColor: loc.color }} />
-                      <div className="relative w-7 h-7 rounded-full border-2 border-white shadow-md flex items-center justify-center" style={{ backgroundColor: loc.color }}>
-                        <MapPin size={12} className="text-white" />
-                      </div>
-                    </div>
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 bg-foreground text-white text-xs px-2 py-1 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none">
-                      {loc.name}
-                    </div>
+              <div className="flex items-center gap-3">
+                {zoomFactor > 1.0 && (
+                  <button 
+                    onClick={() => { setZoomIsland("all"); setZoomFactor(1.0); setSelectedLocation(null); setDroppedFish(null); setShowResult(false); }}
+                    className="text-xs bg-muted hover:bg-muted/80 text-foreground font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1 transition-all border border-border shadow-sm cursor-pointer"
+                  >
+                    ⬅️ Reset Peta
                   </button>
-                ))}
+                )}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-muted-foreground">Fokus Wilayah:</span>
+                  <select 
+                    value={zoomIsland} 
+                    onChange={(e) => {
+                      const val = e.target.value as "all" | "jawa";
+                      setZoomIsland(val);
+                      if (val === "all") {
+                        setZoomFactor(1.0);
+                        setSelectedLocation(null);
+                        setDroppedFish(null);
+                        setShowResult(false);
+                      } else {
+                        setZoomFactor(5.5);
+                      }
+                    }}
+                    className="text-xs border border-border rounded-lg px-2 py-1 bg-card font-medium focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer shadow-sm"
+                  >
+                    <option value="all">Semua Pulau (Pilih Jawa Timur di Peta)</option>
+                    <option value="jawa">Jawa Timur (Zoomed)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div 
+              onMouseDown={(e) => {
+                if (zoomFactor <= 1.0) return;
+                setIsDragging(true);
+                dragStart.current = { x: e.clientX - panOffset.x, y: e.clientY - panOffset.y };
+              }}
+              onMouseMove={(e) => {
+                if (!isDragging) return;
+                const newX = e.clientX - dragStart.current.x;
+                const newY = e.clientY - dragStart.current.y;
+                const maxPanX = 140 * (zoomFactor - 1);
+                const maxPanY = 140 * (zoomFactor - 1);
+                setPanOffset({
+                  x: Math.max(-maxPanX, Math.min(maxPanX, newX)),
+                  y: Math.max(-maxPanY, Math.min(maxPanY, newY))
+                });
+              }}
+              onMouseUp={() => setIsDragging(false)}
+              onMouseLeave={() => setIsDragging(false)}
+              onTouchStart={(e) => {
+                if (zoomFactor <= 1.0 || e.touches.length === 0) return;
+                setIsDragging(true);
+                const touch = e.touches[0];
+                dragStart.current = { x: touch.clientX - panOffset.x, y: touch.clientY - panOffset.y };
+              }}
+              onTouchMove={(e) => {
+                if (!isDragging || e.touches.length === 0) return;
+                const touch = e.touches[0];
+                const newX = touch.clientX - dragStart.current.x;
+                const newY = touch.clientY - dragStart.current.y;
+                const maxPanX = 140 * (zoomFactor - 1);
+                const maxPanY = 140 * (zoomFactor - 1);
+                setPanOffset({
+                  x: Math.max(-maxPanX, Math.min(maxPanX, newX)),
+                  y: Math.max(-maxPanY, Math.min(maxPanY, newY))
+                });
+              }}
+              onTouchEnd={() => setIsDragging(false)}
+              className={`relative bg-gradient-to-br from-[#e0f2fe] via-[#bae6fd] to-[#7dd3fc]/50 overflow-hidden ${zoomFactor > 1.0 ? "cursor-grab active:cursor-grabbing select-none" : ""}`} 
+              style={{ aspectRatio: "2.19/1" }}
+            >
+              {/* Floating Zoom Control Panel */}
+              <div className="absolute bottom-3 right-3 z-30 bg-white/95 backdrop-blur-sm border border-border shadow-md rounded-xl p-2 flex items-center gap-2">
+                <button 
+                  onClick={() => {
+                    const newFactor = Math.max(1.0, zoomFactor - 0.5);
+                    setZoomFactor(newFactor);
+                    setZoomIsland(newFactor > 1.2 ? "jawa" : "all");
+                  }}
+                  className="w-6 h-6 rounded-lg bg-card hover:bg-muted border border-border flex items-center justify-center font-bold text-xs cursor-pointer shadow-sm"
+                  title="Zoom Out"
+                >
+                  ➖
+                </button>
+                <div className="flex flex-col items-center min-w-14">
+                  <span className="text-[8px] font-semibold text-muted-foreground uppercase tracking-wider">Zoom</span>
+                  <span className="text-[11px] font-bold text-primary font-mono">{zoomFactor.toFixed(1)}x</span>
+                </div>
+                <button 
+                  onClick={() => {
+                    const newFactor = Math.min(8.0, zoomFactor + 0.5);
+                    setZoomFactor(newFactor);
+                    setZoomIsland(newFactor > 1.2 ? "jawa" : "all");
+                  }}
+                  className="w-6 h-6 rounded-lg bg-card hover:bg-muted border border-border flex items-center justify-center font-bold text-xs cursor-pointer shadow-sm"
+                  title="Zoom In"
+                >
+                  ➕
+                </button>
+                <input 
+                  type="range" 
+                  min="1.0" 
+                  max="12.0" 
+                  step="0.2" 
+                  value={zoomFactor} 
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value);
+                    setZoomFactor(val);
+                    setZoomIsland(val > 1.2 ? "jawa" : "all");
+                  }}
+                  className="w-16 accent-primary h-1 bg-muted rounded-lg appearance-none cursor-pointer hidden sm:block"
+                />
+              </div>
+
+              <div 
+                style={{
+                  transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomFactor})`,
+                  transition: isDragging ? "none" : "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+                  transformOrigin: "37.9% 77.2%",
+                  width: "100%",
+                  height: "100%",
+                  position: "relative"
+                }}
+              >
+                <img src="/indonesia-map.svg" className="w-full h-full object-contain pointer-events-none select-none p-2 opacity-95" alt="Peta Indonesia" />
+                 <div className="absolute inset-0">
+                  {zoomFactor <= 1.2 ? (
+                    /* Indonesia Mode: Show only Jawa Timur click target */
+                    <button 
+                      onClick={() => {
+                        setZoomIsland("jawa");
+                        setZoomFactor(8.0);
+                      }}
+                      className="absolute group z-20 cursor-pointer" 
+                      style={{ left: "37.9%", top: "75.8%", transform: "translate(-50%,-50%)" }}
+                    >
+                      <div className="relative scale-110">
+                        <div className="absolute inset-0 rounded-full animate-ping opacity-60 bg-red-500" />
+                        <div className="relative w-9 h-9 rounded-full border-2 border-white shadow-xl flex items-center justify-center bg-red-500 hover:bg-red-600 transition-all hover:scale-105">
+                          <MapPin size={16} className="text-white" />
+                        </div>
+                      </div>
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 bg-foreground text-white text-[11px] font-bold px-2.5 py-1 rounded-xl whitespace-nowrap opacity-100 pointer-events-none shadow-lg border border-white/20">
+                        📍 Jawa Timur (Klik untuk Zoom)
+                      </div>
+                    </button>
+                  ) : (
+                    /* Zoomed Mode: Show local cities inside Jawa Timur */
+                    LOCATIONS.map((loc) => {
+                      const isSelected = selectedLocation?.id === loc.id;
+                      const sizeInContainer = 40 / zoomFactor;
+                      return (
+                        <button 
+                          key={loc.id} 
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevents map dragging triggers
+                            setSelectedLocation(loc); 
+                            setDroppedFish(null); 
+                            setShowResult(false); 
+                          }}
+                          className="absolute group z-10 cursor-pointer border-0 p-0 bg-transparent rounded-full focus:outline-none" 
+                          style={{ 
+                            left: `${loc.cx}%`, 
+                            top: `${loc.cy}%`, 
+                            transform: "translate(-50%,-50%)",
+                            width: `${sizeInContainer}px`,
+                            height: `${sizeInContainer}px`,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            aspectRatio: "1/1"
+                          }}
+                        >
+                          <div 
+                            className={`relative transition-all rounded-full ${isSelected ? "scale-125" : "hover:scale-110"}`}
+                            style={{ 
+                              width: "60%", 
+                              height: "60%", 
+                              backgroundColor: loc.color,
+                              borderStyle: "solid",
+                              borderColor: "#ffffff",
+                              borderWidth: `${Math.max(0.5, 1.2 / zoomFactor)}px`,
+                              boxShadow: "0 2px 4px rgba(0,0,0,0.15)",
+                              boxSizing: "border-box",
+                              aspectRatio: "1/1",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center"
+                            }}
+                          >
+                            <div className="absolute inset-0 rounded-full animate-ping opacity-45 bg-current" style={{ color: loc.color }} />
+                          </div>
+                          {isSelected && (
+                            <div 
+                              className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 bg-white/95 text-slate-800 font-bold shadow-md border border-slate-200/90 z-20 animate-in fade-in slide-in-from-bottom-1 duration-200 whitespace-nowrap pointer-events-none"
+                              style={{
+                                fontSize: `${13 / zoomFactor}px`,
+                                padding: `${4 / zoomFactor}px ${10 / zoomFactor}px`,
+                                borderRadius: `${20 / zoomFactor}px`,
+                                borderWidth: `${1.5 / zoomFactor}px`
+                              }}
+                            >
+                              {loc.shortName}
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
               </div>
             </div>
             {selectedLocation ? (
@@ -873,10 +1289,22 @@ function Sim1Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
                   <p className="text-sm font-medium text-blue-800/60">{selectedLocation ? "Seret ikan ke kolam untuk analisis" : "Pilih lokasi dulu, lalu seret ikan"}</p>
                 </div>
               ) : (
-                <div className="text-center animate-in fade-in zoom-in duration-300">
-                  <p className="text-5xl mb-1">🐟</p>
-                  <p className="text-sm font-bold text-blue-900">{droppedFish.name}</p>
-                  {result && <StatusBadge status={result.status} />}
+                <div className="text-center flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300">
+                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/40 mb-1 bg-white/10 flex items-center justify-center shadow-md">
+                    {droppedFish.image ? (
+                      <img src={droppedFish.image} alt={droppedFish.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-3xl">🐟</span>
+                    )}
+                  </div>
+                  <p className="text-sm font-bold text-blue-900 mb-1">{droppedFish.name}</p>
+                  {loadingBackend ? (
+                    <div className="flex items-center justify-center gap-1 text-xs text-blue-800/60">
+                      <Loader2 size={10} className="animate-spin" /> Analisis ML...
+                    </div>
+                  ) : (
+                    <StatusBadge status={mappedStatus} />
+                  )}
                 </div>
               )}
             </div>
@@ -899,7 +1327,13 @@ function Sim1Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
                 <div key={fish.id} draggable onDragStart={() => setDraggingFish(fish)} onDragEnd={() => setDraggingFish(null)}
                   onClick={() => { if (!selectedLocation) { alert("Pilih lokasi dulu!"); return; } setDroppedFish(fish); setShowResult(true); }}
                   className={`cursor-grab active:cursor-grabbing rounded-xl overflow-hidden border transition-all hover:shadow-sm ${draggingFish?.id === fish.id ? "opacity-50 scale-95" : ""} ${droppedFish?.id === fish.id ? "ring-2 ring-primary" : "border-border"}`}>
-                  <div className={`h-14 bg-gradient-to-br ${fish.bg} flex items-center justify-center text-2xl`}>🐟</div>
+                  <div className={`h-14 bg-gradient-to-br ${fish.bg} flex items-center justify-center overflow-hidden relative`}>
+                    {fish.image ? (
+                      <img src={fish.image} alt={fish.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-2xl">🐟</span>
+                    )}
+                  </div>
                   <div className="p-2 bg-card">
                     <p className="text-xs font-semibold leading-tight">{fish.name}</p>
                     <p className="text-xs text-muted-foreground italic truncate">{fish.scientific.split(" ")[0]}</p>
@@ -915,11 +1349,17 @@ function Sim1Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
       {/* RESULT PANEL */}
       {showResult && droppedFish && selectedLocation && result && (
         <div className="max-w-7xl mx-auto px-4 pb-10">
-          <div className={`bg-card border-2 rounded-2xl overflow-hidden shadow-xl ${STATUS_CONFIG[result.status].border}`}>
+          <div className={`bg-card border-2 rounded-2xl overflow-hidden shadow-xl ${STATUS_CONFIG[mappedStatus].border}`}>
             <div className={`p-6 border-b border-border bg-gradient-to-br ${pondBg}`}>
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="flex items-center gap-4">
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${droppedFish.bg} flex items-center justify-center text-3xl shadow-md`}>🐟</div>
+                  <div className={`w-16 h-16 rounded-2xl overflow-hidden bg-gradient-to-br ${droppedFish.bg} flex items-center justify-center text-3xl shadow-md shrink-0`}>
+                    {droppedFish.image ? (
+                      <img src={droppedFish.image} alt={droppedFish.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <span>🐟</span>
+                    )}
+                  </div>
                   <div>
                     <h2 className="text-xl font-bold" style={{ fontFamily: "Poppins" }}>{droppedFish.name}</h2>
                     <p className="text-sm italic text-muted-foreground">{droppedFish.scientific}</p>
@@ -927,7 +1367,7 @@ function Sim1Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <StatusBadge status={result.status} size="lg" />
+                  <StatusBadge status={mappedStatus} size="lg" />
                   <button onClick={() => { setShowResult(false); setDroppedFish(null); }} className="p-2 rounded-lg hover:bg-black/5"><X size={18} /></button>
                 </div>
               </div>
@@ -976,11 +1416,11 @@ function Sim1Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
                 ) : (
                   <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
                     <p className="text-sm leading-relaxed">
-                      {result.status === "cocok"
+                      {mappedStatus === "cocok"
                         ? `Kolam ${selectedLocation.shortName} seperti rumah sempurna untuk ${droppedFish.name}. Ketiga sensor IoT (pH, suhu, kekeruhan) semuanya dalam zona nyaman — ikan diprediksi tumbuh optimal!`
-                        : result.status === "kurang_ideal"
-                        ? `Kolam ${selectedLocation.shortName} cukup untuk ${droppedFish.name}, tapi ada satu parameter di luar toleransi. Ikan masih bisa hidup tapi tidak pertumbuhan tidak maksimal.`
-                        : `Kolam ${selectedLocation.shortName} kurang cocok untuk ${droppedFish.name}. Dua atau lebih parameter di luar toleransi — model memprediksi pertumbuhan suboptimal.`
+                        : mappedStatus === "kurang_ideal"
+                          ? `Kolam ${selectedLocation.shortName} cukup untuk ${droppedFish.name}, tapi ada satu parameter di luar toleransi. Ikan masih bisa hidup tapi tidak pertumbuhan tidak maksimal.`
+                          : `Kolam ${selectedLocation.shortName} kurang cocok untuk ${droppedFish.name}. Dua atau lebih parameter di luar toleransi — model memprediksi pertumbuhan suboptimal.`
                       }
                     </p>
                   </div>
@@ -988,16 +1428,34 @@ function Sim1Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
 
                 {/* AI Narrative */}
                 <div className="bg-gradient-to-br from-primary/5 to-teal-50 border border-primary/15 rounded-xl p-4">
-                  <p className="text-xs font-semibold text-primary mb-2 flex items-center gap-1"><Cpu size={11} /> Prediksi Random Forest</p>
-                  <p className="text-sm leading-relaxed">
-                    {result.status === "cocok"
-                      ? `${droppedFish.name} diprediksi menunjukkan pertumbuhan optimal di ${selectedLocation.name}. pH ${selectedLocation.params.ph}, suhu ${selectedLocation.params.temp}°C, dan kekeruhan ${selectedLocation.params.turbidity} NTU semuanya dalam toleransi fisiologis.`
-                      : result.status === "kurang_ideal"
-                      ? `${droppedFish.name} kemungkinan mengalami stres fisiologis ringan di ${selectedLocation.name}. Satu parameter di luar toleransi dapat menurunkan efisiensi pakan dan laju pertumbuhan.`
-                      : `${droppedFish.name} diprediksi tidak tumbuh optimal di ${selectedLocation.name}. Model merekomendasikan evaluasi lokasi lain atau penyesuaian kondisi air kolam.`
-                    }
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-2 italic">Prediksi Random Forest — realfishdataset.csv, Jamalpur Bangladesh</p>
+                  <p className="text-xs font-semibold text-primary mb-2 flex items-center gap-1"><Cpu size={11} /> Prediksi ML & Interpretasi AI</p>
+                  {loadingBackend ? (
+                    <div className="flex items-center gap-2 py-2 text-xs text-muted-foreground">
+                      <Loader2 size={14} className="animate-spin text-primary" />
+                      <span>Menghubungi AI Akuakultur...</span>
+                    </div>
+                  ) : backendError ? (
+                    <p className="text-xs text-red-500 py-1">{backendError}</p>
+                  ) : backendResult ? (
+                    <div>
+                      <div className="space-y-1">{parseFormattedText(backendResult.ai_interpretation)}</div>
+                      <p className="text-xs text-muted-foreground mt-2 italic">
+                        Prediksi Model ML ({backendResult.machine_learning_result.fish_name}) — Confidence: {(backendResult.machine_learning_result.evaluation.confidence * 100).toFixed(1)}% ({backendResult.machine_learning_result.evaluation.confidence_label})
+                      </p>
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-sm leading-relaxed">
+                        {mappedStatus === "cocok"
+                          ? `${droppedFish.name} diprediksi menunjukkan pertumbuhan optimal di ${selectedLocation.name}. pH ${selectedLocation.params.ph}, suhu ${selectedLocation.params.temp}°C, dan kekeruhan ${selectedLocation.params.turbidity} NTU semuanya dalam toleransi fisiologis.`
+                          : mappedStatus === "kurang_ideal"
+                            ? `${droppedFish.name} kemungkinan mengalami stres fisiologis ringan di ${selectedLocation.name}. Satu parameter di luar toleransi dapat menurunkan efisiensi pakan dan laju pertumbuhan.`
+                            : `${droppedFish.name} diprediksi tidak tumbuh optimal di ${selectedLocation.name}. Model merekomendasikan evaluasi lokasi lain atau penyesuaian kondisi air kolam.`
+                        }
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-2 italic">Prediksi Random Forest (Offline) — realfishdataset.csv, Jamalpur Bangladesh</p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Accordion */}
@@ -1059,7 +1517,7 @@ function Sim1Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
                     className="flex items-center gap-1.5 text-xs bg-primary text-white px-3 py-2 rounded-lg hover:bg-primary/90">
                     <RefreshCw size={12} />Coba Lain
                   </button>
-                  <button className="flex items-center gap-1.5 text-xs border border-border text-muted-foreground px-3 py-2 rounded-lg hover:bg-muted/40">
+                  <button onClick={handleExportPDF} className="flex items-center gap-1.5 text-xs border border-border text-muted-foreground px-3 py-2 rounded-lg hover:bg-muted/40 transition-colors">
                     <Download size={12} />Ekspor PDF
                   </button>
                   <button onClick={() => navigate("fish-detail", { fishId: droppedFish.id })}
@@ -1086,6 +1544,38 @@ function Sim2Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
   const [params, setParams] = useState({ ph: 7.0, temp: 28, turbidity: 12 });
   const fish = FISH_DATA.find((f) => f.id === selectedFishId);
 
+  const [backendResult, setBackendResult] = useState<BackendRecommendationResponse | null>(null);
+  const [loadingBackend, setLoadingBackend] = useState(false);
+  const [backendError, setBackendError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (selectedFishId && params) {
+      setLoadingBackend(true);
+      const handler = setTimeout(() => {
+        const compat = fish ? checkCompatibility(fish, { ...LOCATIONS[0], params }) : null;
+        const localStat = compat ? compat.status : "cocok";
+        const details = compat ? compat.details : [];
+        fetchRecommendation(selectedFishId, params.ph, params.temp, params.turbidity, localStat, details)
+          .then((data) => {
+            setBackendResult(data);
+            setLoadingBackend(false);
+            setBackendError(null);
+          })
+          .catch((err) => {
+            console.error(err);
+            setBackendError("Gagal menghubungi backend. Menggunakan kalkulasi lokal.");
+            setLoadingBackend(false);
+          });
+      }, 400);
+
+      return () => clearTimeout(handler);
+    } else {
+      setBackendResult(null);
+      setLoadingBackend(false);
+      setBackendError(null);
+    }
+  }, [selectedFishId, params]);
+
   const sliders = [
     { key: "ph", label: "pH", icon: "⚗️", min: 4.0, max: 10.0, step: 0.1, unit: "" },
     { key: "temp", label: "Suhu", icon: "🌡️", min: 15, max: 40, step: 0.5, unit: "°C" },
@@ -1102,9 +1592,11 @@ function Sim2Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
   const result = fish ? checkCompatibility(fish, mockLoc) : null;
   const issues = result ? result.details.filter((d) => !d.inRange) : [];
 
-  const pondBg = !result ? "from-blue-200 to-cyan-300" :
-    result.status === "cocok" ? "from-green-200 to-teal-300" :
-    result.status === "kurang_ideal" ? "from-yellow-100 to-amber-200" : "from-red-100 to-red-200";
+  const mappedStatus = result?.status;
+
+  const pondBg = !mappedStatus ? "from-blue-200 to-cyan-300" :
+    mappedStatus === "cocok" ? "from-green-200 to-teal-300" :
+      mappedStatus === "kurang_ideal" ? "from-yellow-100 to-amber-200" : "from-red-100 to-red-200";
 
   return (
     <div style={{ fontFamily: "Nunito, sans-serif" }}>
@@ -1186,18 +1678,24 @@ function Sim2Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
           <div className="bg-card border border-border rounded-2xl overflow-hidden">
             <div className="p-5 border-b border-border flex items-center justify-between">
               <h2 className="font-bold text-sm" style={{ fontFamily: "Poppins" }}>Visualisasi Kolam Real-time</h2>
-              {result && <StatusBadge status={result.status} size="lg" />}
+              {result && <StatusBadge status={mappedStatus as CompatibilityStatus} size="lg" />}
             </div>
             <div className={`h-52 bg-gradient-to-b ${pondBg} flex items-center justify-center transition-all duration-500`}>
               {!fish ? (
                 <div className="text-center"><p className="text-6xl mb-2 opacity-50">💧</p><p className="text-blue-800/50 text-sm">Pilih spesies ikan dulu</p></div>
               ) : (
-                <div className="text-center">
-                  <div className={`text-6xl mb-2 transition-all duration-500 ${result?.status === "tidak_cocok" ? "grayscale opacity-40" : result?.status === "kurang_ideal" ? "opacity-70" : ""}`}>🐟</div>
+                <div className="text-center flex flex-col items-center justify-center">
+                  <div className={`w-20 h-20 rounded-full overflow-hidden border-4 border-white/40 mb-2 bg-white/10 flex items-center justify-center shadow-lg transition-all duration-500 ${mappedStatus === "tidak_cocok" ? "grayscale opacity-40" : mappedStatus === "kurang_ideal" ? "opacity-70" : "animate-bounce"}`}>
+                    {fish.image ? (
+                      <img src={fish.image} alt={fish.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-4xl">🐟</span>
+                    )}
+                  </div>
                   <p className="font-bold text-blue-900">{fish.name}</p>
-                  {result?.status === "tidak_cocok" && <p className="text-xs text-red-700 mt-1">⚠️ Kondisi kritis</p>}
-                  {result?.status === "kurang_ideal" && <p className="text-xs text-yellow-700 mt-1">⚡ Stres ringan</p>}
-                  {result?.status === "cocok" && <p className="text-xs text-green-700 mt-1">✅ Pertumbuhan optimal</p>}
+                  {mappedStatus === "tidak_cocok" && <p className="text-xs text-red-700 mt-1">⚠️ Kondisi kritis</p>}
+                  {mappedStatus === "kurang_ideal" && <p className="text-xs text-yellow-700 mt-1">⚡ Stres ringan</p>}
+                  {mappedStatus === "cocok" && <p className="text-xs text-green-700 mt-1">✅ Pertumbuhan optimal</p>}
                 </div>
               )}
             </div>
@@ -1207,7 +1705,7 @@ function Sim2Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
                 {issues.map((d) => <p key={d.param} className="text-xs text-red-600">• <strong>{d.label}</strong>: {d.value}{d.unit} (ideal: {d.idealMin}–{d.idealMax}{d.unit})</p>)}
               </div>
             )}
-            {result?.status === "cocok" && <div className="px-5 py-3 bg-green-50 border-t border-green-100"><p className="text-xs text-green-700">✅ Ketiga parameter dalam rentang ideal. Model memprediksi pertumbuhan optimal untuk {fish?.name}.</p></div>}
+            {mappedStatus === "cocok" && <div className="px-5 py-3 bg-green-50 border-t border-green-100"><p className="text-xs text-green-700">✅ Ketiga parameter dalam rentang ideal. Model memprediksi pertumbuhan optimal untuk {fish?.name}.</p></div>}
           </div>
 
           {fish && result && (
@@ -1222,6 +1720,35 @@ function Sim2Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
                     {d.inRange ? <CheckCircle size={14} className="text-green-500 mt-1" /> : <XCircle size={14} className="text-red-500 mt-1" />}
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {fish && (
+            <div className="bg-card border border-border rounded-2xl overflow-hidden">
+              <div className="px-5 py-3 border-b border-border flex items-center gap-2">
+                <Cpu size={14} className="text-primary" />
+                <h3 className="font-bold text-sm" style={{ fontFamily: "Poppins" }}>Analisis AI & Prediksi Model ML</h3>
+              </div>
+              <div className="p-5">
+                {loadingBackend ? (
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground py-2">
+                    <Loader2 size={14} className="animate-spin text-primary" />
+                    <span>Menghubungi AI Akuakultur...</span>
+                  </div>
+                ) : backendError ? (
+                  <p className="text-xs text-red-500 py-1">{backendError}</p>
+                ) : backendResult ? (
+                  <div className="space-y-3">
+                    <div className="space-y-1">{parseFormattedText(backendResult.ai_interpretation)}</div>
+                    <div className="text-xs text-muted-foreground border-t border-border/50 pt-2 flex justify-between items-center">
+                      <span>Confidence: {(backendResult.machine_learning_result.evaluation.confidence * 100).toFixed(1)}% ({backendResult.machine_learning_result.evaluation.confidence_label})</span>
+                      <span className="font-semibold text-primary">Model: Random Forest Classifier</span>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground italic">Menunggu parameter disesuaikan untuk analisis model ML...</p>
+                )}
               </div>
             </div>
           )}
@@ -1242,36 +1769,46 @@ function Sim3Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
   const [showVideo, setShowVideo] = useState(false);
 
   const zones = [
-    { id: 0, name: "Kolam Intensif", fullName: "Kolam Budidaya Intensif", emoji: "🏗️", color: "#0891B2", bg: "#EFF6FF",
+    {
+      id: 0, name: "Kolam Intensif", fullName: "Kolam Budidaya Intensif", emoji: "🏗️", icon: Cpu, color: "#0891B2", bg: "#EFF6FF",
       desc: "Kolam terpal atau beton dengan kepadatan tinggi dan aerasi mekanis. Manajemen kualitas air sangat intensif untuk mendukung biomassa maksimal.",
       params: { ph: "7.0–8.5", temp: "26–32", turbidity: "5–20" },
       fish: ["nila", "lele", "patin"],
       threat: "Risiko: penumpukan amonia dari kepadatan tinggi dan biaya operasional aerasi yang tinggi.",
-      fact: "Sistem paling produktif per luas lahan — produksi bisa 50–100 ton/ha/tahun." },
-    { id: 1, name: "Kolam Semi-Intensif", fullName: "Kolam Budidaya Semi-Intensif", emoji: "🌿", color: "#10B981", bg: "#ECFDF5",
+      fact: "Sistem paling produktif per luas lahan — produksi bisa 50–100 ton/ha/tahun."
+    },
+    {
+      id: 1, name: "Kolam Semi-Intensif", fullName: "Kolam Budidaya Semi-Intensif", emoji: "🌿", icon: Sprout, color: "#10B981", bg: "#ECFDF5",
       desc: "Kolam tanah tradisional dengan kepadatan sedang. Memanfaatkan produktivitas alami kolam dikombinasikan dengan pakan tambahan.",
       params: { ph: "6.5–8.5", temp: "24–32", turbidity: "10–30" },
       fish: ["mas", "rohu", "katla", "nila"],
       threat: "Risiko: kualitas air fluktuatif dan produktivitas alami yang bergantung musim.",
-      fact: "Sistem paling umum di Indonesia — ramah lingkungan dan cocok untuk petambak skala kecil." },
-    { id: 2, name: "Karamba", fullName: "Karamba / Keramba Jaring Apung", emoji: "🛶", color: "#F59E0B", bg: "#FFFBEB",
+      fact: "Sistem paling umum di Indonesia — ramah lingkungan dan cocok untuk petambak skala kecil."
+    },
+    {
+      id: 2, name: "Karamba", fullName: "Karamba / Keramba Jaring Apung", emoji: "🛶", icon: Anchor, color: "#F59E0B", bg: "#FFFBEB",
       desc: "Jaring terapung di sungai atau waduk. Ikan mendapat pasokan air segar terus-menerus dari badan air, mengurangi kebutuhan aerasi.",
       params: { ph: "6.8–8.0", temp: "26–31", turbidity: "8–25" },
       fish: ["patin", "nila", "mas"],
       threat: "Risiko: pencemaran badan air dari pakan berlebihan dan limbah ikan yang terakumulasi.",
-      fact: "Karamba di Waduk Cirata (Jawa Barat) adalah sistem karamba terbesar di Asia Tenggara." },
-    { id: 3, name: "Tambak Payau", fullName: "Tambak Budidaya Payau", emoji: "🌊", color: "#8B5CF6", bg: "#F5F3FF",
+      fact: "Karamba di Waduk Cirata (Jawa Barat) adalah sistem karamba terbesar di Asia Tenggara."
+    },
+    {
+      id: 3, name: "Tambak Payau", fullName: "Tambak Budidaya Payau", emoji: "🌊", icon: Waves, color: "#8B5CF6", bg: "#F5F3FF",
       desc: "Perairan peralihan tawar-asin di pesisir. Spesies euryhaline seperti udang cocok untuk sistem ini.",
       params: { ph: "7.0–8.5", temp: "25–32", turbidity: "5–20" },
       fish: ["udang", "prawn"],
       threat: "Risiko: intrusi air laut berlebihan, kekeringan musim kemarau, dan konversi mangrove.",
-      fact: "Tambak pesisir Indonesia mencakup >650.000 ha — terluas ketiga di dunia." },
-    { id: 4, name: "Rawa/Danau Alam", fullName: "Perairan Rawa & Danau Alam", emoji: "🌾", color: "#6B7280", bg: "#F9FAFB",
+      fact: "Tambak pesisir Indonesia mencakup >650.000 ha — terluas ketiga di dunia."
+    },
+    {
+      id: 4, name: "Rawa/Danau Alam", fullName: "Perairan Rawa & Danau Alam", emoji: "🌾", icon: Trees, color: "#6B7280", bg: "#F9FAFB",
       desc: "Ekosistem alami dengan keragaman hayati tinggi. pH rendah khas gambut Kalimantan dan Sumatera menjadi karakteristik utama.",
       params: { ph: "5.5–7.5", temp: "24–32", turbidity: "15–40" },
       fish: ["singhi", "lele", "mas"],
       threat: "Risiko: kebakaran lahan gambut, drainase untuk pertanian, dan konversi habitat.",
-      fact: "Rawa gambut Indonesia menyimpan 57 miliar ton karbon — salah satu simpanan karbon terbesar dunia." },
+      fact: "Rawa gambut Indonesia menyimpan 57 miliar ton karbon — salah satu simpanan karbon terbesar dunia."
+    },
   ];
 
   const zone = activeZone !== null ? zones[activeZone] : null;
@@ -1309,17 +1846,21 @@ function Sim3Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
                 const c = configs[i];
                 return (
                   <button key={z.id} className="absolute transition-all cursor-pointer"
-                    style={{ top: `${c.top}%`, height: `${c.h}%`, left: `${c.left}%`, width: `${c.w}%`,
-                      background: activeZone === i || hoveredZone === i ? `${z.color}30` : "transparent",
-                      border: `2px ${activeZone === i ? "solid" : "dashed"} ${activeZone === i || hoveredZone === i ? z.color : "transparent"}`,
-                      borderRadius: 10 }}
+                    style={{
+                      top: `${c.top}%`, height: `${c.h}%`, left: `${c.left}%`, width: `${c.w}%`,
+                      background: activeZone === i || hoveredZone === i ? `${z.color}40` : `${z.color}20`,
+                      border: `2px ${activeZone === i ? "solid" : "dashed"} ${activeZone === i || hoveredZone === i ? z.color : `${z.color}80`}`,
+                      borderRadius: 10
+                    }}
                     onClick={() => setActiveZone(activeZone === i ? null : i)}
                     onMouseEnter={() => setHoveredZone(i)}
                     onMouseLeave={() => setHoveredZone(null)}>
                     {(hoveredZone === i || activeZone === i) && (
                       <span className="absolute top-1 left-2 text-xs font-bold bg-black/50 text-white px-2 py-0.5 rounded-md whitespace-nowrap">{z.name}</span>
                     )}
-                    <span className="absolute bottom-2 left-1/2 -translate-x-1/2 text-2xl">{z.emoji}</span>
+                    <span className="absolute bottom-2.5 left-1/2 -translate-x-1/2 transition-colors duration-200" style={{ color: z.color }}>
+                      <z.icon size={26} />
+                    </span>
                   </button>
                 );
               })}
@@ -1329,7 +1870,7 @@ function Sim3Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
                 <button key={z.id} onClick={() => setActiveZone(activeZone === z.id ? null : z.id)}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all"
                   style={{ backgroundColor: activeZone === z.id ? z.color : "white", color: activeZone === z.id ? "white" : z.color, borderColor: z.color }}>
-                  {z.emoji} {z.name}
+                  <z.icon size={14} className="flex-shrink-0" /> {z.name}
                 </button>
               ))}
             </div>
@@ -1340,7 +1881,9 @@ function Sim3Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
           <div className="bg-card border-2 rounded-2xl overflow-hidden animate-in fade-in duration-300" style={{ borderColor: zone.color }}>
             <div className="p-5 border-b border-border flex items-center justify-between" style={{ background: zone.bg }}>
               <div className="flex items-center gap-3">
-                <span className="text-3xl">{zone.emoji}</span>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center border shadow-sm transition-all" style={{ backgroundColor: zone.color + '15', color: zone.color, borderColor: zone.color + '30' }}>
+                  <zone.icon size={24} />
+                </div>
                 <div>
                   <h2 className="text-xl font-bold" style={{ fontFamily: "Poppins" }}>{zone.fullName}</h2>
                   <p className="text-sm text-muted-foreground">Sistem budidaya air tawar</p>
@@ -1367,11 +1910,17 @@ function Sim3Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
                     const f = FISH_DATA.find((x) => x.id === fid);
                     if (!f) return null;
                     return (
-                      <div key={fid} className="bg-muted/30 rounded-xl overflow-hidden">
-                        <div className={`h-12 bg-gradient-to-br ${f.bg} flex items-center justify-center text-xl`}>🐟</div>
-                        <div className="px-2 py-1.5">
-                          <p className="text-xs font-semibold leading-tight">{f.name}</p>
-                          <p className="text-xs text-muted-foreground italic">{f.scientific.split(" ")[0]}</p>
+                      <div key={fid} className="bg-muted/30 rounded-xl overflow-hidden border border-border/40 hover:border-primary/30 transition-all flex flex-col">
+                        <div className="h-16 w-full overflow-hidden relative bg-muted flex items-center justify-center">
+                          {f.image ? (
+                            <img src={f.image} alt={f.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className={`w-full h-full bg-gradient-to-br ${f.bg} flex items-center justify-center text-xl`}>🐟</div>
+                          )}
+                        </div>
+                        <div className="p-2 flex-1 flex flex-col justify-center">
+                          <p className="text-xs font-bold leading-tight text-foreground">{f.name}</p>
+                          <p className="text-[10px] text-muted-foreground italic leading-none mt-1">{f.scientific}</p>
                         </div>
                       </div>
                     );
@@ -1414,12 +1963,17 @@ function Sim3Page({ navigate }: { navigate: (p: Page, e?: Record<string, unknown
         <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-6" onClick={() => setShowVideo(false)}>
           <div className="bg-foreground rounded-2xl overflow-hidden w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between px-5 py-3 border-b border-white/10">
-              <p className="text-white text-sm font-semibold">{zone.emoji} {zone.fullName}</p>
+              <p className="text-white text-sm font-semibold flex items-center gap-2">
+                <zone.icon size={16} style={{ color: zone.color }} />
+                {zone.fullName}
+              </p>
               <button onClick={() => setShowVideo(false)} className="text-white/60 hover:text-white"><X size={18} /></button>
             </div>
             <div className="flex items-center justify-center bg-gradient-to-br from-[#0F172A] to-[#1e3a5f]" style={{ aspectRatio: "16/9" }}>
               <div className="text-center text-white">
-                <p className="text-5xl mb-4">{zone.emoji}</p>
+                <div className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center bg-white/10 mb-4 animate-pulse" style={{ color: zone.color }}>
+                  <zone.icon size={36} />
+                </div>
                 <p className="text-white/80 font-semibold mb-2">{zone.fullName}</p>
                 <p className="text-white/50 text-sm">Video edukasi — konten segera hadir</p>
                 <p className="text-white/40 text-xs mt-2">Karakteristik, manajemen kualitas air, dan spesies unggulan</p>
@@ -1470,7 +2024,13 @@ function DatabasePage({ navigate }: { navigate: (p: Page, e?: Record<string, unk
           {filtered.map((fish) => (
             <button key={fish.id} onClick={() => navigate("fish-detail", { fishId: fish.id })}
               className="bg-card border border-border rounded-2xl overflow-hidden text-left hover:shadow-lg hover:-translate-y-1 transition-all group">
-              <div className={`h-36 bg-gradient-to-br ${fish.bg} flex items-center justify-center text-6xl group-hover:scale-105 transition-transform`}>🐟</div>
+              <div className={`h-36 bg-gradient-to-br ${fish.bg} flex items-center justify-center overflow-hidden relative group-hover:scale-105 transition-transform`}>
+                {fish.image ? (
+                  <img src={fish.image} alt={fish.name} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-6xl">🐟</span>
+                )}
+              </div>
               <div className="p-4">
                 <h3 className="font-bold text-base mb-0.5" style={{ fontFamily: "Poppins" }}>{fish.name}</h3>
                 <p className="text-xs italic text-muted-foreground mb-3">{fish.scientific}</p>
@@ -1514,7 +2074,13 @@ function FishDetailPage({ fishId, navigate }: { fishId: string; navigate: (p: Pa
             <ChevronLeft size={16} />Kembali ke Database
           </button>
           <div className="flex items-center gap-6">
-            <div className="text-8xl">🐟</div>
+            <div className="w-24 h-24 rounded-2xl overflow-hidden bg-white/20 flex items-center justify-center shrink-0 border border-white/10 shadow-md">
+              {fish.image ? (
+                <img src={fish.image} alt={fish.name} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-5xl">🐟</span>
+              )}
+            </div>
             <div>
               <div className="flex flex-wrap gap-2 mb-2">
                 <span className="text-xs px-2.5 py-1 rounded-full font-semibold bg-white/30">{fish.category}</span>
@@ -1583,7 +2149,13 @@ function FishDetailPage({ fishId, navigate }: { fishId: string; navigate: (p: Pa
 
         <div className="space-y-5">
           <div className={`bg-gradient-to-br ${fish.bg} rounded-2xl p-5 text-white text-center`}>
-            <div className="text-6xl mb-3">🐟</div>
+            <div className="w-24 h-24 mx-auto rounded-full overflow-hidden border-4 border-white/20 mb-3 bg-white/10 flex items-center justify-center shadow-inner">
+              {fish.image ? (
+                <img src={fish.image} alt={fish.name} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-4xl">🐟</span>
+              )}
+            </div>
             <h3 className="text-lg font-bold mb-0.5" style={{ fontFamily: "Poppins" }}>{fish.name}</h3>
             <p className="italic text-white/80 text-sm">{fish.scientific}</p>
             <div className="mt-3 flex gap-2 justify-center flex-wrap">
@@ -2008,6 +2580,31 @@ function TentangPage({ navigate }: { navigate: (p: Page, e?: Record<string, unkn
 export default function App() {
   const [page, setPage] = useState<Page>("beranda");
   const [extra, setExtra] = useState<Record<string, unknown>>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    Promise.all([
+      fetch("http://127.0.0.1:8000/api/locations").then((res) => {
+        if (!res.ok) throw new Error("Gagal mengambil data lokasi");
+        return res.json();
+      }),
+      fetch("http://127.0.0.1:8000/api/fishes").then((res) => {
+        if (!res.ok) throw new Error("Gagal mengambil data ikan");
+        return res.json();
+      }),
+    ])
+      .then(([locs, fishes]) => {
+        LOCATIONS = locs;
+        FISH_DATA = fishes;
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("Gagal memuat data dari database. Pastikan backend server berjalan.");
+        setLoading(false);
+      });
+  }, []);
 
   function navigate(p: Page, e?: Record<string, unknown>) {
     setPage(p); setExtra(e ?? {});
@@ -2015,6 +2612,32 @@ export default function App() {
   }
 
   const renderPage = () => {
+    if (loading) {
+      return (
+        <div className="min-h-[60vh] flex flex-col items-center justify-center text-slate-800 p-8">
+          <Loader2 className="w-12 h-12 text-teal-600 animate-spin mb-4" />
+          <h2 className="text-xl font-bold">Memuat Data Akuakultur...</h2>
+          <p className="text-slate-500 mt-2 text-sm">Menghubungkan ke database lokal</p>
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className="min-h-[60vh] flex flex-col items-center justify-center text-red-600 p-8 text-center">
+          <AlertTriangle className="w-12 h-12 mb-4" />
+          <h2 className="text-xl font-bold">Terjadi Kesalahan</h2>
+          <p className="text-slate-600 mt-2 text-sm max-w-md">{error}</p>
+          <button 
+            onClick={() => { setError(null); setLoading(true); window.location.reload(); }}
+            className="mt-6 px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-700 transition"
+          >
+            Coba Lagi
+          </button>
+        </div>
+      );
+    }
+
     switch (page) {
       case "beranda": return <BerandaPage navigate={navigate} />;
       case "virtual-lab": return <VirtualLabPage navigate={navigate} />;
